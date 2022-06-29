@@ -34,5 +34,12 @@ stateDiagram-v2
 ## システム概要図-2
 ロボット定義&動作定義
 
+```mermaid
+stateDiagram-v2
+  ROS2 --> STM32
+  STM32 --> Motordriver
+
+```
+
 ## システム概要図-3
 シュミレーション
