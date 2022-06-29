@@ -3,8 +3,6 @@ import socket
 import netifaces
 import time
 
-#netifaces.ifaddresses('en0')[netifaces.AF_INET][0]['addr'] 
-
 class UDPHandler():
     def __init__(self):
         address = (netifaces.ifaddresses('en0')[netifaces.AF_INET][0]['addr'] , 64201)
@@ -44,6 +42,12 @@ class UDPHandler():
                 sock.sendto(str("MYNODEIS" + "ROS2 Node").encode('utf-8'), (ip , 64201))
                 print(str("MYNODEIS" + "ROS2 Node").encode('utf-8'), (ip , 64201))
                 sock.close()
+
+            pos = -1
+            pos = stringData.find('CLOSESESSION')
+            if pos != -1 :
+                self.close()
+
                 
 
     def close(self):
