@@ -7,8 +7,9 @@
 ```mermaid
 stateDiagram-v2
   PhysicalGameController --> SmartController3App(iOS)
-  SmartController3App(iOS) --> ROS2
-  ROS2 --> SmartController3App(iOS)
+  SmartController3App(iOS) --> RoboNetwork2
+  RoboNetwork2 --> SmartController3App(iOS)
+  RoboNetwork2 --> ROS2
   
   state PhysicalGameController{
   XboxOneController --> bluetooth
@@ -24,7 +25,7 @@ stateDiagram-v2
   
   }
   state ROS2{
-  PythonSocket --> ROS2(JoyMessage)
+  ROS2(JoyMessage)
   }
  
   
