@@ -33,14 +33,35 @@ stateDiagram-v2
 ```
 
 ## システム概要図-2
-ロボット定義&動作定義
+ロボット動作
 
 ```mermaid
 stateDiagram-v2
+  RobotNetwork2 --> ROS2
   ROS2 --> STM32
-  STM32 --> Motordriver
+  STM32 --> ROS2
+  STM32 --> Hardwawre
+  Hardwawre --> STM32
+
+  state RobotNetwork2{
+    pythonSocket --> rclpy
+  }
+  
+  state ROS2{
+  vel_msg --> PWRManager
+  odom_msg
+  }
+  
+  state STM32{
+    UART --> HAL
+  }
+  
+  state Hardwawre{
+    Motor
+    Encoder
+  }
 
 ```
 
 ## システム概要図-3
-シュミレーション
+センサー
