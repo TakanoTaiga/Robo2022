@@ -24,7 +24,8 @@ class UDPHandler():
             pos = stringData.find('WHOAREYOU')
             if pos != -1 :
                 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                sock.sendto(str("MYNAMEIS" + self.hostname).encode('utf-8'), (ip , 64201))
+                sendData = str("MYNAMEIS" + self.hostname)
+                sock.sendto(sendData.encode('utf-8'), (ip , 64201))
                 print(str("MYNAMEIS" + self.hostname).encode('utf-8'), (ip , 64201))
                 sock.close()
 
@@ -32,15 +33,27 @@ class UDPHandler():
             pos = stringData.find('WHATISNODEIP')
             if pos != -1 :
                 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                sock.sendto(str("MYNODEIP" + netifaces.ifaddresses('en0')[netifaces.AF_INET][0]['addr']).encode('utf-8'), (ip , 64201))
+                sendData = str("MYNODEIP" + netifaces.ifaddresses('en0')[netifaces.AF_INET][0]['addr'])
+                sock.sendto(sendData.encode('utf-8'), (ip , 64201))
+                print(sendData , (ip , 64201))
                 sock.close()
 
             pos = -1
             pos = stringData.find('WHATISYORNODE')
             if pos != -1 :
                 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                sock.sendto(str("MYNODEIS" + "ROS2 Node").encode('utf-8'), (ip , 64201))
-                print(str("MYNODEIS" + "ROS2 Node").encode('utf-8'), (ip , 64201))
+                sendData = str("MYNODEIS" + "ROS2 Node")
+                sock.sendto(sendData.encode('utf-8'), (ip , 64201))
+                print(sendData, (ip , 64201))
+                sock.close()
+
+            pos = -1
+            pos = stringData.find('PING')
+            if pos != -1 :
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sendData = "CHECK"
+                sock.sendto(sendData.encode('utf-8'), (ip , 64201))
+                print(sendData, (ip , 64201))
                 sock.close()
 
             pos = -1
