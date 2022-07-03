@@ -1,7 +1,5 @@
-from audioop import add
 import socket
 import netifaces
-import time
 
 class UDPHandler():
     def __init__(self):
