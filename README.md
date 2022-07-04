@@ -18,7 +18,9 @@ stateDiagram-v2
   }
 
   state SmartController3App(iOS){
-  NWListener --> ROSInfomation
+  NWListener --> ROSConnect
+  ROSConnect --> NWConnection
+  ROSConnect --> ROSInfomation
   GameController --> NWConnection
   GameController --> ControllerInfomationWidget
   GameController --> DeviceInfoWidget
