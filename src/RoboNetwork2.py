@@ -129,7 +129,7 @@ class UDPHandler(GCText , setupTasks , ROS_msg):
             pos = stringData.find('CLOSESESSION')
             if pos != -1 :
                 self.UDPServerSocket.close()  
-                ROS_msg.shutdown(self)  
+                rclpy.shutdown() 
                 break                 
 
     def __init__(self):
