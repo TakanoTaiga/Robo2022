@@ -49,6 +49,12 @@ class UDPHandler(GCText , setupTasks):
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.sendto(packet.encode('utf-8'), (self.args.target , 64201))
+        sock.close()
+
+    def rmNode(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.sendto("CLOSESESSION".encode('utf-8'), (self.args.target , 64201))
+        sock.close()
 
     def __init__(self):
         self.args = setupTasks.parser(self)
@@ -79,6 +85,16 @@ def main():
         pos = command[0].lower().find('ls')
         if pos != -1:
             print(UDPHandlerObject.msgs)
+        
+        pos = -1
+        pos = command[0].lower().find('demo')
+        if pos != -1:
+            UDPHandlerObject.sendGCText()
+        
+        pos = -1
+        pos = command[0].lower().find('rm')
+        if pos != -1:
+            UDPHandlerObject.rmNode()
             
 
 if __name__ == "__main__":
