@@ -22,7 +22,8 @@ find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 
 add_executable(joy2vel src/joy2vel.cpp)
-target_include_directories(joy2vel PUBLIC
+add_executable(omni src/omni.cpp)
+target_include_directories(joy2vel PUBLIC omni 
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
   
@@ -33,8 +34,16 @@ ament_target_dependencies(
   sensor_msgs
 )
 
+ament_target_dependencies(
+  omni
+  geometry_msgs
+  rclcpp
+)
+
 
 install(TARGETS joy2vel
+  DESTINATION lib/${PROJECT_NAME})
+install(TARGETS omni
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
