@@ -137,7 +137,7 @@ class UDPHandler(GCText , setupTasks , ROS_msg):
         self.address = (netifaces.ifaddresses(args.nwiface)[netifaces.AF_INET][0]['addr'] , 64201)
         print(self.address)
         self.UDPServerSocket = socket.socket(socket.AF_INET , socket.SOCK_DGRAM)
-        self.UDPServerSocket.bind(self.address)
+        self.UDPServerSocket.bind(("" , 64201))
         self.hostname = socket.gethostname()
         rclpy.init(args=None)
         my_node = Node('SMC_publiser')
