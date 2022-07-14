@@ -27,7 +27,8 @@ stateDiagram-v2
   
   }
   state ROS2{
-  ROS2(JoyMessage)
+  rn2 --> joy2vel
+  joy2vel --> omni
   }
  
   
