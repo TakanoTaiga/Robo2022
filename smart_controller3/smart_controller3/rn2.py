@@ -67,9 +67,9 @@ class GCText():
                     elif GCInfoMsg[1] == 'T':
                         GCInfoMsg[2] = float(infoList[1])
                     elif GCInfoMsg[1] == 'B':
-                        if infoList[1] == 'true':
+                        if infoList[1] == '1':
                             GCInfoMsg[2] = True
-                        elif infoList[1] == 'false':
+                        elif infoList[1] == '0':
                             GCInfoMsg[2] = False
                             
                         
@@ -105,7 +105,7 @@ class UDPHandler(GCText , setupTasks , ROS_msg):
             pos = stringData.find('WHATISYORNODE')
             if pos != -1 :
                 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                sendData = str("MYNODEIS" + "ROS2 Node")
+                sendData = str("MYNODEIS" + "SMC_publiser")
                 sock.sendto(sendData.encode('utf-8'), (ip , 64201))
                 print(sendData, (ip , 64201))
                 sock.close()
