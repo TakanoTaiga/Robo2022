@@ -13,8 +13,11 @@ class setupTasks():
         return args
 
 class ROS_msg():
-    def createMsg(GCInfoMsgs):
+    def createMsg(GCInfoMsgs , now):
         msg = Joy()
+        msg.header.frame_id = "sc3"
+        print(now)
+        msg.header.stamp = now
         for GCInfoMsg in GCInfoMsgs:
             if GCInfoMsg[1] == 'J':
                 msg.axes.append(GCInfoMsg[2][0])
@@ -22,35 +25,33 @@ class ROS_msg():
             elif GCInfoMsg[1] == 'T':
                 msg.axes.append(GCInfoMsg[2])
             elif GCInfoMsg[1] == 'B':
-                if GCInfoMsg[2]:
-                    msg.buttons.append(1)
-                else:
-                    msg.buttons.append(0)
+                msg.buttons.append(GCInfoMsg[2])
+
         return msg
 
 
 class GCText():
     GCInfoMsgs = [
-        ["leftJoystic" , 'J' , [0.0 , 0.0] , 1] ,
-        ["rightJoystic" , 'J' ,[0.0 , 0.0] , 2] ,
-        ["leftTrigger" , 'T' , 0.0 , 3] ,
-        ["rightTrigger" , 'T' , 0.0 , 4] ,
-        ["dpadLeft" , 'B' , False , 0] ,
-        ["dpadUp" , 'B' , False , 1] ,
-        ["dpadRight" , 'B' , False , 2] ,
-        ["dpadDown" , 'B' , False , 3] ,
-        ["buttonX" , 'B' , False , 4] ,
-        ["buttonY" , 'B' , False , 5] ,
-        ["buttonB" , 'B' , False , 6] ,
-        ["buttonA" , 'B' , False , 7] ,
-        ["leftThumbstickButton" , 'B' , False , 8] ,
-        ["rightThumbstickButton" , 'B' , False , 9] ,
-        ["optionButton" , 'B' , False , 10] ,
-        ["menuButton" , 'B' , False , 11] ,
-        ["leftShoulderButton" , 'B' , False , 12] ,
-        ["rightShoulderButton" , 'B' , False , 13] ,
-        ["leftTriggerButton" , 'B' , False , 14] ,
-        ["rightTriggerButton" , 'B' , False , 15]
+        ["1" , 'J' , [0.0 , 0.0]] ,
+        ["2" , 'J' ,[0.0 , 0.0]] ,
+        ["3" , 'T' , 0.0] ,
+        ["4" , 'T' , 0.0] ,
+        ["5" , 'B' , 0] ,
+        ["6" , 'B' , 0] ,
+        ["7" , 'B' , 0] ,
+        ["8" , 'B' , 0] ,
+        ["9" , 'B' , 0] ,
+        ["A" , 'B' , 0] ,
+        ["B" , 'B' , 0] ,
+        ["C" , 'B' , 0] ,
+        ["D" , 'B' , 0] ,
+        ["E" , 'B' , 0] ,
+        ["F" , 'B' , 0] ,
+        ["G" , 'B' , 0] ,
+        ["H" , 'B' , 0] ,
+        ["I" , 'B' , 0] ,
+        ["J" , 'B' , 0] ,
+        ["K" , 'B' , 0]
     ]
 
     def NWtoGCmsg(self , NWMessage):
@@ -67,10 +68,7 @@ class GCText():
                     elif GCInfoMsg[1] == 'T':
                         GCInfoMsg[2] = float(infoList[1])
                     elif GCInfoMsg[1] == 'B':
-                        if infoList[1] == '1':
-                            GCInfoMsg[2] = True
-                        elif infoList[1] == '0':
-                            GCInfoMsg[2] = False
+                        GCInfoMsg[2] = int(infoList[1])
                             
                         
         
@@ -123,7 +121,7 @@ class UDPHandler(GCText , setupTasks , ROS_msg):
             pos = stringData.find('GCINFO')
             if pos != -1 :
                 GCText.NWtoGCmsg(self, NWMessage=stringData)
-                self.pub.publish(ROS_msg.createMsg(GCText.GCInfoMsgs))
+                self.pub.publish(ROS_msg.createMsg(GCText.GCInfoMsgs , self.my_node.get_clock().now().to_msg()))
 
             pos = -1
             pos = stringData.find('CLOSESESSION')
@@ -140,8 +138,8 @@ class UDPHandler(GCText , setupTasks , ROS_msg):
         self.UDPServerSocket.bind(("" , 64201))
         self.hostname = socket.gethostname()
         rclpy.init(args=None)
-        my_node = Node('SMC_publiser')
-        self.pub = my_node.create_publisher(Joy , '/joy' , 10)
+        self.my_node = Node('SMC_publiser')
+        self.pub = self.my_node.create_publisher(Joy , '/joy' , 10)
 
 
 def main():
