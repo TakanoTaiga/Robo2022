@@ -28,35 +28,30 @@
 ## システム概要図-1
 
 コントローラー周り
-
 ```mermaid
-stateDiagram-v2
-  PhysicalGameController --> SmartController3App(iOS)
-  SmartController3App(iOS) --> RoboNetwork2
-  RoboNetwork2 --> SmartController3App(iOS)
-  RoboNetwork2 --> ROS2
-  
-  state PhysicalGameController{
-  XboxOneController --> bluetooth
-  Dualshock --> bluetooth
-  OtherController --> bluetooth
-  }
+flowchart TD
 
-  state SmartController3App(iOS){
-  NWListener --> ROSConnect
-  ROSConnect --> NWConnection
-  ROSConnect --> ROSInfomation
-  GameController --> NWConnection
-  GameController --> ControllerInfomationWidget
-  GameController --> DeviceInfoWidget
-  
-  }
-  state ROS2{
-  rn2 --> joy2vel
-  joy2vel --> omni
-  }
- 
-  
+id1(PhysicalGameController) -- blutooth --> id2(GCContoller)
+subgraph SmartControllerApp3
+id2 --> id3(GameControllerClass)
+id3 -- TX --> id4(NWConnection)
+id3 --> DeviceInfoWidget
+id3 --> ControllerInfomationWidget
+id5(ROSConnect) -- tx --> id4
+id4 -- rx --> id5
+id5 --> ROSInfomation
+end
+
+subgraph smart_contoller3
+id4 -- UDP --> id6(rn2)
+end
+
+subgraph robo2022
+id6 -- sensor_msgs/Joy Message --> id7(jo2vel)
+id7 -- geometry_msgs/Twist Message --> id8(omni)
+end
+
+id8 -- USB Serial --> Arduino
 
 ```
 
