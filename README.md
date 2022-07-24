@@ -49,11 +49,12 @@ end
 subgraph robo2022
 id6 -- sensor_msgs/Joy Message --> id7(jo2vel)
 id7 -- geometry_msgs/Twist Message --> id8(omni)
-id8 -- std_msgs/Float64MultiArray Message --> id9(rvizsim)
-id8 -- std_msgs/String Message --> id10(gateway)
+id8 -- std_msgs/Float64MultiArray Message --> id9(sim_gateway)
+id8 -- std_msgs/String Message --> id10(hw_gateway)
 end
-id9 -- tf2 --> RViz
+id9 -- UDP --> Unity
 id10 -- USB Serial --> Arduino
+id10 -- USB Serial --> STM32
 
 ```
 
