@@ -13,7 +13,10 @@
 - Jetson Nano
   - Jetpack 4.6.1
   - ROS2 Dashing
-  
+- Windows11
+  - GTX 1080
+  - intel i5 12th
+
 ## 本番環境(予定)
 - Jetson AGX Xavier
   - Jetpack 5.0.1
@@ -51,43 +54,20 @@ id6 -- sensor_msgs/Joy Message --> id7(jo2vel)
 id7 -- geometry_msgs/Twist Message --> id8(omni)
 id8 -- std_msgs/Float64MultiArray Message --> id9(sim_gateway)
 id8 -- std_msgs/String Message --> id10(hw_gateway)
+
 end
-id9 -- UDP --> Unity
+subgraph sim
+id9 -- access --> id11(unity_gateway)
+id11 -- exports --> id9
+id11 --> VirtualActuator
+VirtualSensor --> id11
+
+SimRobot --> VirtualSensor
+VirtualActuator --> SimRobot
+
+end
 id10 -- USB Serial --> Arduino
 id10 -- USB Serial --> STM32
 
-```
-
-## システム概要図-2
-ロボット動作
-
-```mermaid
-stateDiagram-v2
-  RobotNetwork2 --> ROS2
-  ROS2 --> STM32
-  STM32 --> ROS2
-  STM32 --> Hardwawre
-  Hardwawre --> STM32
-
-  state RobotNetwork2{
-    pythonSocket --> rclpy
-  }
-  
-  state ROS2{
-  vel_msg --> PWRManager
-  odom_msg
-  }
-  
-  state STM32{
-    UART --> HAL
-  }
-  
-  state Hardwawre{
-    Motor
-    Encoder
-  }
 
 ```
-
-## システム概要図-3
-センサー
