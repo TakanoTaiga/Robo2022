@@ -30,7 +30,6 @@
 
 ## システム概要図-1
 
-コントローラー周り
 ```mermaid
 flowchart TD
 
@@ -70,4 +69,29 @@ id10 -- USB Serial --> Arduino
 id10 -- USB Serial --> STM32
 
 
+```
+
+
+## 電気配線
+
+```mermaid
+flowchart TD
+subgraph 強電
+id1(LiPo　2直列) -- 並列 --> id3(バッテリー基板)
+id2(LiPo　2直列) -- 並列 --> id3
+id3 -- 緊急停止スイッチ --> id4(ロボット内配線用分岐基板)
+id4 -- Y型2Y型 --> id5(モータドライバ)
+id4 -- Y型2Y型 --> id6(モータドライバ)
+id4 -- Y型2Y型 --> id7(モータドライバ)
+id4 -- Y型2Y型 --> id8(モータドライバ)
+id4 -- Y型2Y型 --> id9(モータドライバ)
+id4 -- Y型2Y型 --> id10(モータドライバ)
+
+id5 -- Y型2XT --> id11(足回りモーター)
+id6 -- Y型2XT --> id12(足回りモーター)
+id7 -- Y型2XT --> id13(足回りモーター)
+id8 -- Y型2XT --> id14(足回りモーター)
+id9 -- Y型2XT --> id15(機構用モーター)
+id10 -- Y型2XT --> id16(機構用モーター)
+end
 ```
