@@ -74,6 +74,7 @@ id10 -- USB Serial --> STM32
 
 ## 電気配線
 
+パターン N
 ```mermaid
 flowchart TD
 subgraph 強電
@@ -118,4 +119,82 @@ id27(エンコーダー) --> id19
 id28(エンコーダー) --> id19
 
 end
+```
+
+パターン B
+
+```mermaid
+flowchart TD
+subgraph 強電
+id1(LiPo　2直列) -- 並列 --> id3(バッテリー基板)
+id2(LiPo　2直列) -- 並列 --> id3
+id3 -- 緊急停止スイッチ --> id4(ロボット内配線用分岐基板)
+id4 -- Y型2Y型 --> id5(モータドライバ)
+id4 -- Y型2Y型 --> id6(モータドライバ)
+id4 -- Y型2Y型 --> id7(モータドライバ)
+id4 -- Y型2Y型 --> id8(モータドライバ)
+id4 -- Y型2Y型 --> id9(モータドライバ)
+id4 -- Y型2Y型 --> id10(モータドライバ)
+
+id5 -- Y型2XT --> id11(足回りモーター)
+id6 -- Y型2XT --> id12(足回りモーター)
+id7 -- Y型2XT --> id13(足回りモーター)
+id8 -- Y型2XT --> id14(足回りモーター)
+id9 -- Y型2XT --> id15(機構用モーター)
+id10 -- Y型2XT --> id16(機構用モーター)
+end
+
+subgraph 弱電
+id17(モバイルバッテリー18w) --> id18(Surafce Go)
+id18 <-- USB --> id19(MDコントローラwithSTM32)
+
+id19 .-> id5
+id19 .-> id6
+id19 .-> id7
+id19 .-> id8
+id19 .-> id9
+id19 .-> id10
+
+
+end
+```
+
+パターン X
+
+```mermaid
+flowchart TD
+subgraph 強電
+id1(LiPo　2直列) -- 並列 --> id3(バッテリー基板)
+id2(LiPo　2直列) -- 並列 --> id3
+id3 -- 緊急停止スイッチ --> id4(ロボット内配線用分岐基板)
+id4 -- XT2XT --> id5(モータドライバwithSTM32)
+id4 -- XT2XT --> id6(モータドライバwithSTM32)
+
+id5 -- Y型2XT --> id11(足回りモーター)
+id5 -- Y型2XT --> id12(足回りモーター)
+id5 -- Y型2XT --> id13(足回りモーター)
+id5 -- Y型2XT --> id14(足回りモーター)
+id6 -- Y型2XT --> id15(機構用モーター)
+id6 -- Y型2XT --> id16(機構用モーター)
+end
+
+subgraph 弱電
+id17(モバイルバッテリー60w) --> id18(Jetson AGX Xavier)
+id18 -- USB --> モバイルモニター
+id18 <-- LAN --> id20(ルーター)
+id21(LiPo 2並列) -- 7.4V --> id22(DCDC)
+id22 -- 12V --> id20
+
+id18 -- USB --> id5
+id18 -- USB --> id6
+
+end
+
+
+id23(エンコーダー) --> id5
+id24(エンコーダー) --> id5
+id25(エンコーダー) --> id5
+id26(エンコーダー) --> id5
+id27(エンコーダー) --> id6
+id28(エンコーダー) --> id6
 ```
