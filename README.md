@@ -94,4 +94,28 @@ id8 -- Y型2XT --> id14(足回りモーター)
 id9 -- Y型2XT --> id15(機構用モーター)
 id10 -- Y型2XT --> id16(機構用モーター)
 end
+
+subgraph 弱電
+id17(モバイルバッテリー60w) --> id18(Jetson AGX Xavier)
+id18 -- USB --> モバイルモニター
+id18 <-- USB --> id19(MDコントローラwithSTM32)
+id18 <-- LAN --> id20(ルーター)
+id21(LiPo 2並列) -- 7.4V --> id22(DCDC)
+id22 -- 12V --> id20
+
+id19 .-> id5
+id19 .-> id6
+id19 .-> id7
+id19 .-> id8
+id19 .-> id9
+id19 .-> id10
+
+id23(エンコーダー) --> id19
+id24(エンコーダー) --> id19
+id25(エンコーダー) --> id19
+id26(エンコーダー) --> id19
+id27(エンコーダー) --> id19
+id28(エンコーダー) --> id19
+
+end
 ```
