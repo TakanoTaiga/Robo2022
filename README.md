@@ -28,7 +28,7 @@
 
   
 
-## システム概要図-1
+## システム概要図
 
 ```mermaid
 flowchart TD
@@ -71,6 +71,28 @@ id10 -- USB Serial --> STM32
 
 ```
 
+
+## SIM
+### SimRobot構造
+足回り
+```mermaid
+flowchart TD
+id1(Master) --> Body
+id1 --> Glue1
+id1 --> Glue2
+id1 --> Glue3
+id1 --> Glue4
+id1 --> id2(omni1)
+id1 --> id3(omni2)
+id1 --> id4(omni3)
+id1 --> id5(omni4)
+
+id2 --> joint1
+id3 --> joint2
+id4 --> joint3
+id5 --> joint4
+
+```
 
 ## 電気配線
 
