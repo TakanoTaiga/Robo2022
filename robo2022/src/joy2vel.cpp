@@ -15,7 +15,7 @@ class joy2vel : public rclcpp::Node
       "/joy" , 10 , std::bind(&joy2vel::topic_callback, this , _1)
     );
 
-    pub_ = this->create_publisher<geometry_msgs::msg::Twist>("turtle1/cmd_vel" , 10);
+    pub_ = this->create_publisher<geometry_msgs::msg::Twist>("robo2022/cmd_vel" , 10);
   }
 
   private:
