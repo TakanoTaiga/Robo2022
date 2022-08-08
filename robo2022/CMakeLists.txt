@@ -20,30 +20,78 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 
 add_executable(joy2vel src/joy2vel.cpp)
 add_executable(omni src/omni.cpp)
-target_include_directories(joy2vel PUBLIC omni 
+add_executable(vel2motor src/vel2motor.cpp)
+add_executable(physicalMDC src/physicalMDC.cpp)
+add_executable(serial src/serial.cpp)
+
+
+target_include_directories(joy2vel PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+target_include_directories(omni PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+target_include_directories(vel2motor PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
   
+target_include_directories(physicalMDC PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+target_include_directories(serial PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+
 ament_target_dependencies(
   joy2vel
-  geometry_msgs
   rclcpp
+  geometry_msgs
   sensor_msgs
 )
 
 ament_target_dependencies(
   omni
-  geometry_msgs
   rclcpp
+  geometry_msgs
+)
+
+ament_target_dependencies(
+  vel2motor
+  rclcpp
+  geometry_msgs
+  std_msgs
+)
+
+ament_target_dependencies(
+  physicalMDC
+  rclcpp
+  std_msgs
+)
+
+ament_target_dependencies(
+  serial
+  rclcpp
+  std_msgs
 )
 
 
 install(TARGETS joy2vel
   DESTINATION lib/${PROJECT_NAME})
 install(TARGETS omni
+  DESTINATION lib/${PROJECT_NAME})
+install(TARGETS vel2motor
+  DESTINATION lib/${PROJECT_NAME})
+install(TARGETS physicalMDC
+  DESTINATION lib/${PROJECT_NAME})
+install(TARGETS serial
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
