@@ -15,7 +15,7 @@ class joy2vel : public rclcpp::Node
       "/joy" , 10 , std::bind(&joy2vel::topic_callback, this , _1)
     );
 
-    pub_ = this->create_publisher<geometry_msgs::msg::Twist>("turtle1/cmd_vel" , 10);
+    pub_ = this->create_publisher<geometry_msgs::msg::Twist>("robo2022/cmd_vel" , 10);
   }
 
   private:
@@ -26,7 +26,6 @@ class joy2vel : public rclcpp::Node
     twist_msg.linear.y = (double)(get_msg->axes[1]);
     twist_msg.angular.z = (double)(get_msg->axes[2]);
     pub_ -> publish(twist_msg);
-    RCLCPP_INFO(this->get_logger(), "I heard x:%lf , y:%lf" , get_msg->axes[0] , get_msg->axes[1]);
   }
 
   rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr sub_;
