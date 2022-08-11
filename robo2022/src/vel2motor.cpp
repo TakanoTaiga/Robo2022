@@ -16,24 +16,18 @@ class msgCreate
 
     double vel2motor(const geometry_msgs::msg::Twist::SharedPtr geo_msg , std::string motorPosition)
     {
-        double V1 = -1 * sin(PI / 4) * geo_msg->linear.x + cos(PI / 4) * geo_msg->linear.y + L * geo_msg->angular.z;
-        double V2 = -1 * cos(PI / 4) * geo_msg->linear.x - sin(PI / 4) * geo_msg->linear.y + L * geo_msg->angular.z;
-        double V3 =      sin(PI / 4) * geo_msg->linear.x - cos(PI / 4) * geo_msg->linear.y + L * geo_msg->angular.z;
-        double V4 =      cos(PI / 4) * geo_msg->linear.x + sin(PI / 4) * geo_msg->linear.y + L * geo_msg->angular.z;
+        double V1 = -0.707106781 * geo_msg->linear.x + 0.707106781 * geo_msg->linear.y + L * geo_msg->angular.z;
+        double V2 = -0.707106781 * geo_msg->linear.x - 0.707106781 * geo_msg->linear.y + L * geo_msg->angular.z;
+        double V3 =  0.707106781 * geo_msg->linear.x - 0.707106781 * geo_msg->linear.y + L * geo_msg->angular.z;
+        double V4 =  0.707106781 * geo_msg->linear.x + 0.707106781 * geo_msg->linear.y + L * geo_msg->angular.z;
 
-        double scaler = 1.0;
-        V1 *= scaler;
-        V2 *= scaler;
-        V3 *= scaler;
-        V4 *= scaler;
-
-        if(motorPosition == "FL"){
+        if(motorPosition == "V1"){
             return V1;
-        }else if(motorPosition == "FR"){
+        }else if(motorPosition == "V2"){
             return V2;
-        }else if(motorPosition == "RL"){
+        }else if(motorPosition == "V3"){
             return V3;
-        }else if(motorPosition == "RR"){
+        }else if(motorPosition == "V4"){
             return V4;
         }else if(motorPosition == "normal"){
           return geo_msg->angular.x;

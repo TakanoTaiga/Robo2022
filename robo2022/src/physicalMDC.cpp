@@ -14,16 +14,16 @@ class physicalMDC : public rclcpp::Node
   physicalMDC() : Node("physicalMDC")
   {
     sub_[0] = this->create_subscription<std_msgs::msg::Float32>(
-      "robo2022/motor_power/FR" , 10 , std::bind(&physicalMDC::topic_callback_FR, this , _1)
+      "robo2022/motor_power/V1" , 10 , std::bind(&physicalMDC::topic_callback_V1, this , _1)
     );
     sub_[1] = this->create_subscription<std_msgs::msg::Float32>(
-      "robo2022/motor_power/FL" , 10 , std::bind(&physicalMDC::topic_callback_FL, this , _1)
+      "robo2022/motor_power/V2" , 10 , std::bind(&physicalMDC::topic_callback_V2, this , _1)
     );
     sub_[2] = this->create_subscription<std_msgs::msg::Float32>(
-      "robo2022/motor_power/RR" , 10 , std::bind(&physicalMDC::topic_callback_RR, this , _1)
+      "robo2022/motor_power/V3" , 10 , std::bind(&physicalMDC::topic_callback_V3, this , _1)
     );
     sub_[3] = this->create_subscription<std_msgs::msg::Float32>(
-      "robo2022/motor_power/RL" , 10 , std::bind(&physicalMDC::topic_callback_RL, this , _1)
+      "robo2022/motor_power/V4" , 10 , std::bind(&physicalMDC::topic_callback_V4, this , _1)
     );
 
     pub_ = this->create_publisher<std_msgs::msg::String>("robo2022/serial_output" , 10);
@@ -35,25 +35,25 @@ class physicalMDC : public rclcpp::Node
   }
 
   private:
-  void topic_callback_FR(const std_msgs::msg::Float32::SharedPtr get_msg)
+  void topic_callback_V1(const std_msgs::msg::Float32::SharedPtr get_msg)
   {
     motor_power_sub_data[0] = get_msg->data;
     motor_power_sub_checker[0] = true;
     sendSerialData();
   }
-  void topic_callback_FL(const std_msgs::msg::Float32::SharedPtr get_msg)
+  void topic_callback_V2(const std_msgs::msg::Float32::SharedPtr get_msg)
   {
     motor_power_sub_data[1] = get_msg->data;
     motor_power_sub_checker[1] = true;
     sendSerialData();
   }
-  void topic_callback_RR(const std_msgs::msg::Float32::SharedPtr get_msg)
+  void topic_callback_V3(const std_msgs::msg::Float32::SharedPtr get_msg)
   {
     motor_power_sub_data[2] = get_msg->data;
     motor_power_sub_checker[2] = true;
     sendSerialData();
   }
-  void topic_callback_RL(const std_msgs::msg::Float32::SharedPtr get_msg)
+  void topic_callback_V4(const std_msgs::msg::Float32::SharedPtr get_msg)
   {
     motor_power_sub_data[3] = get_msg->data;
     motor_power_sub_checker[3] = true;
@@ -89,7 +89,7 @@ class physicalMDC : public rclcpp::Node
     pub_->publish(pubMsg);
   }
 
-  double motor_power_sub_data[4];
+  double motor_power_sub_data[4] = {0.0};
   bool motor_power_sub_checker[4];
 
   rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr sub_[4];

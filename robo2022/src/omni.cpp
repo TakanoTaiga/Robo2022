@@ -1,3 +1,7 @@
+/*
+This node has reached its EOL (end-of-life).
+*/
+
 #include <memory>
 #include <iostream>
 #include <string>
