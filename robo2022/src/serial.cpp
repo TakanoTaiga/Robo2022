@@ -60,7 +60,7 @@ class serial : public rclcpp::Node
         fcntl(fd, F_SETFL,0);
         struct termios conf_tio;
         tcgetattr(fd,&conf_tio);
-        speed_t BAUDRATE = B230400;
+        speed_t BAUDRATE = B115200;
         cfsetispeed(&conf_tio, BAUDRATE);
         cfsetospeed(&conf_tio, BAUDRATE);
         conf_tio.c_lflag &= ~(ECHO | ICANON);
