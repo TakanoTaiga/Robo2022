@@ -16,6 +16,8 @@
 
 using std::placeholders::_1;
 
+#define pub_size 256
+
 class server : public rclcpp::Node
 {
   public:
@@ -23,15 +25,17 @@ class server : public rclcpp::Node
   {
     this->declare_parameter<int>("port");
     this->declare_parameter<std::string>("nic");
+    this->declare_parameter<bool>("debug" , false);
 
     this->get_parameter("port" , param_port);
     this->get_parameter("nic" , param_nic);
+    this->get_parameter("debug" , param_debug);
 
     get_ip(param_nic);
 
     pub_ = this->create_publisher<sensor_msgs::msg::Joy>("sc_client/joy" , 10);
 
-    sock = socket(AF_INET, SOCK_DGRAM, 0);
+    rcv_sock = socket(AF_INET, SOCK_DGRAM, 0);
     send_socket = socket(AF_INET, SOCK_DGRAM, 0);
 
     addr.sin_family = AF_INET;
@@ -42,20 +46,22 @@ class server : public rclcpp::Node
     addr.sin_port = htons(param_port);
     send_addr.sin_port = htons(param_port);
 
-    bind(sock, (const struct sockaddr *)&addr, sizeof(addr));
+    bind(rcv_sock, (const struct sockaddr *)&addr, sizeof(addr));
     
 
     while (rclcpp::ok())
     {
-        char buf[256];
+        char buf[pub_size];
         
         memset(buf, 0, sizeof(buf));
-        if(recvfrom(sock , buf , sizeof(buf) , 0 , (struct sockaddr *)&from_addr , &sin_size) < 0){
+        if(recvfrom(rcv_sock , buf , sizeof(buf) , 0 , (struct sockaddr *)&from_addr , &sin_size) < 0){
           RCLCPP_INFO(this->get_logger(), "ERROR:01");
           rclcpp::shutdown();
         }
 
-        //RCLCPP_INFO(this->get_logger(), "%s:%s", inet_ntoa(from_addr.sin_addr), buf);
+        if(param_debug){
+          RCLCPP_INFO(this->get_logger(), "%s:%s", inet_ntoa(from_addr.sin_addr), buf);
+        }
 
         char cmpData[] = "WHATISNODEIP";
         if(strcmp(buf , cmpData) == 0){
@@ -86,7 +92,7 @@ class server : public rclcpp::Node
           sendto(send_socket, buf_send, strlen(buf_send), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
         }
 
-        if(create_msg(buf,sizeof(buf)) > 0){
+        if(create_msg(buf) > 0){
           auto pub_joy_msg = sensor_msgs::msg::Joy();
           pub_joy_msg.axes = axesData;
           pub_joy_msg.buttons = buttonData;
@@ -97,13 +103,13 @@ class server : public rclcpp::Node
         }
     }
 
-    close(sock);
+    close(rcv_sock);
   }
 
 private:
     rclcpp::Publisher<sensor_msgs::msg::Joy>::SharedPtr pub_;
 
-    int sock;
+    int rcv_sock;
     int send_socket;
     struct sockaddr_in addr;
     struct sockaddr_in from_addr;
@@ -113,6 +119,7 @@ private:
     int param_port;
     char param_addr_c[IF_NAMESIZE];
     std::string param_nic;
+    bool param_debug;
 
     std::vector<float> axesData;
     std::vector<int> buttonData;
@@ -156,14 +163,13 @@ private:
     axesData.push_back(atof(data_y));    
     }
 
-    void my_atof(char *data , int size){
+    void my_atof(char *data){
         char buf[16];
         snprintf(buf, 16, "%s", data+2);
         axesData.push_back(atof(buf));
     }
 
-    void my_atob(char *data , int size){
-        //bool rtData = false;
+    void my_atob(char *data){
         if (data[2] == '1') {
           buttonData.push_back(1);
         }else{
@@ -172,7 +178,7 @@ private:
     }
 
 
-    int create_msg(char *data , int size){
+    int create_msg(char *data){
         char headerName[7];
         snprintf(headerName, 7, "%s", data);
         if(strcmp(headerName, "GCINFO")){
@@ -181,21 +187,21 @@ private:
         
         int end_pos = 0;
         
-        for(int i = 0 ;i <= size - 2 ; i++){
+        for(int i = 0 ;i <= pub_size - 2 ; i++){
             if (data[i] == 'E' && data[i + 1] == 'N' && data[i + 2] == 'D') {
                 end_pos = i;
                 break;
             }
         }
         
-        char csvData[size];
+        char csvData[pub_size];
         snprintf(csvData, end_pos - 6, "%s", data + 6);
         
-        for (int i = 0; i < sizeof(csvData) - 1; i++) {
+        for (int i = 0; i < pub_size - 1; i++) {
             if (csvData[i] == ',') {
                 char header = csvData[i + 1];
                 int nextt=0;
-                for (int j = i + 1; j < sizeof(csvData); j++) {
+                for (int j = i + 1; j < pub_size; j++) {
                     if (csvData[j] == ',') {
                         nextt = j;
                         break;
@@ -207,9 +213,9 @@ private:
                 if (header == '1' || header == '2') {
                     my_atofs(packetData, nextt - i);
                 }else if(header == '3' || header == '4'){
-                    my_atof(packetData, nextt - i);
+                    my_atof(packetData);
                 }else{
-                    my_atob(packetData, nextt - i);
+                    my_atob(packetData);
                 }
             }
         }
