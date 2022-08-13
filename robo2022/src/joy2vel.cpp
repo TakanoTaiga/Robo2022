@@ -22,9 +22,9 @@ class joy2vel : public rclcpp::Node
   void topic_callback(const sensor_msgs::msg::Joy::SharedPtr get_msg) const
   {
     auto twist_msg = geometry_msgs::msg::Twist();
-    twist_msg.linear.x = (double)(get_msg->axes[0]);
+    twist_msg.linear.x = (double)(get_msg->axes[0]) * -1;
     twist_msg.linear.y = (double)(get_msg->axes[1]);
-    twist_msg.angular.z = (double)(get_msg->axes[2]);
+    twist_msg.angular.z = (double)(get_msg->axes[3]);
     pub_ -> publish(twist_msg);
   }
 

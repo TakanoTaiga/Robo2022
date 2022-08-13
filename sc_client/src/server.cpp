@@ -210,9 +210,9 @@ private:
                 char packetData[32];
                 snprintf(packetData, nextt - i, "%s" , &csvData[i+1]);
                 
-                if (header == '1' || header == '2') {
+                if (header == 'J') {
                     my_atofs(packetData, nextt - i);
-                }else if(header == '3' || header == '4'){
+                }else if(header == 'T'){
                     my_atof(packetData);
                 }else{
                     my_atob(packetData);
