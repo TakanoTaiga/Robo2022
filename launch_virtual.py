@@ -45,7 +45,14 @@ def generate_launch_description():
         Node(
             package='sc_client',
             executable='server',
-            parameters=[{'port' :64201},{'nic' : 'wlp3s0'}]
-        )
+            parameters=[{'port' :64201},{'nic' : 'wlp3s0'},{"debug" : False}]
+        ),
+        Node(
+            package='joy',
+            executable='joy_node',
+            remappings=[
+                ('/joy' , '/sc_client/joy')
+            ]
+        ),
 
     ])
