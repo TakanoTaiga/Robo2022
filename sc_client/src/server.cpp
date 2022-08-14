@@ -23,8 +23,8 @@ class server : public rclcpp::Node
   public:
   server() : Node("server")
   {
-    this->declare_parameter<int>("port");
-    this->declare_parameter<std::string>("nic");
+    this->declare_parameter<int>("port" , 64201);
+    this->declare_parameter<std::string>("nic" , "lo");
     this->declare_parameter<bool>("debug" , false);
 
     this->get_parameter("port" , param_port);

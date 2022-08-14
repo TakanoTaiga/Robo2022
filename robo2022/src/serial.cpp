@@ -20,7 +20,7 @@ class serial : public rclcpp::Node
     public:
     serial() : Node("serial")
     {
-        this->declare_parameter<std::string>("device_file");
+        this->declare_parameter<std::string>("device_file" , "/dev/ttyACM0");
         this->get_parameter("device_file" , deviceName_str);
         char deviceName[64];
         strcpy(deviceName , deviceName_str.c_str());

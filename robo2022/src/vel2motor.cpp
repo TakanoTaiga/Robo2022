@@ -42,7 +42,7 @@ class joy2motor : public rclcpp::Node , public msgCreate
   public:
   joy2motor() : Node("joy2motor")
   {
-    this->declare_parameter<std::string>("motor_position");
+    this->declare_parameter<std::string>("motor_position" , "normal");
     this->get_parameter("motor_position", motorPosition_string_);
 
     sub_ = this->create_subscription<geometry_msgs::msg::Twist>(
