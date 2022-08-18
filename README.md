@@ -1,5 +1,7 @@
 # 2022Robokon A team
 
+more info --> [2022Robokon_A_Team/architecture.md](https://github.com/TakanoTaiga/2022Robokon_A_Team/blob/main/architecture.md)
+
 ## Build
 
 install dependencies:
