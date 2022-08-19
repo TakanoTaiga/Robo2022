@@ -9,12 +9,16 @@
 #include <sys/ioctl.h>
 #include <net/if.h>
 #include <vector>
+#include <chrono>
+
 
 
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/joy.hpp"
 
 using std::placeholders::_1;
+using namespace std::chrono_literals;
+
 
 #define pub_size 256
 
@@ -47,16 +51,15 @@ class server : public rclcpp::Node
     send_addr.sin_port = htons(param_port);
 
     bind(rcv_sock, (const struct sockaddr *)&addr, sizeof(addr));
+    static const int val = 1;
+    ioctl(rcv_sock , FIONBIO , &val);
     
-
-    while (rclcpp::ok())
-    {
-        char buf[pub_size];
+    timer_ = this->create_wall_timer(10ms , [this](){
+      char buf[pub_size];
         
         memset(buf, 0, sizeof(buf));
         if(recvfrom(rcv_sock , buf , sizeof(buf) , 0 , (struct sockaddr *)&from_addr , &sin_size) < 0){
-          RCLCPP_INFO(this->get_logger(), "ERROR:01");
-          rclcpp::shutdown();
+          return;
         }
 
         if(param_debug){
@@ -101,13 +104,12 @@ class server : public rclcpp::Node
           axesData.resize(0);
           buttonData.resize(0);
         }
-    }
-
-    close(rcv_sock);
+    });
   }
 
 private:
     rclcpp::Publisher<sensor_msgs::msg::Joy>::SharedPtr pub_;
+    rclcpp::TimerBase::SharedPtr timer_;
 
     int rcv_sock;
     int send_socket;
