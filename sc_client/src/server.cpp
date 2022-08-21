@@ -30,14 +30,23 @@ class server : public rclcpp::Node
     this->declare_parameter<int>("port" , 64201);
     this->declare_parameter<std::string>("nic" , "lo");
     this->declare_parameter<bool>("debug" , false);
+    this->declare_parameter<std::string>("c1" , "c1");
+    this->declare_parameter<std::string>("c2" , "c2");
+    this->declare_parameter<std::string>("s1" , "s1");
+    this->declare_parameter<std::string>("s2" , "s2");
 
     this->get_parameter("port" , param_port);
     this->get_parameter("nic" , param_nic);
     this->get_parameter("debug" , param_debug);
+    this->get_parameter("c1" , param_c1_Label);
+    this->get_parameter("c2" , param_c2_Label);
+    this->get_parameter("s1" , param_s1_Label);
+    this->get_parameter("s2" , param_s2_Label);
 
     get_ip(param_nic);
 
-    pub_ = this->create_publisher<sensor_msgs::msg::Joy>("sc_client/joy" , 10);
+    pub_joy_ = this->create_publisher<sensor_msgs::msg::Joy>("sc_client/joy" , 1);
+    pub_smart_ui_ = this->create_publisher<sensor_msgs::msg::Joy>("sc_client/SmartUI" , 1);
 
     rcv_sock = socket(AF_INET, SOCK_DGRAM, 0);
     send_socket = socket(AF_INET, SOCK_DGRAM, 0);
@@ -54,7 +63,7 @@ class server : public rclcpp::Node
     static const int val = 1;
     ioctl(rcv_sock , FIONBIO , &val);
     
-    timer_ = this->create_wall_timer(10ms , [this](){
+    timer_ = this->create_wall_timer(1ms , [this](){
       char buf[pub_size];
         
         memset(buf, 0, sizeof(buf));
@@ -69,9 +78,10 @@ class server : public rclcpp::Node
         char cmpData[] = "WHATISNODEIP";
         if(strcmp(buf , cmpData) == 0){
           char buf_send[16 + IF_NAMESIZE];
-          sprintf(buf_send , "MYNODEIP%s" ,param_addr_c);
+          snprintf(buf_send , 16 + IF_NAMESIZE , "MYNODEIP%s" ,param_addr_c);
           send_addr.sin_addr = from_addr.sin_addr;
           sendto(send_socket, buf_send, strlen(buf_send), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
+          RCLCPP_INFO(this->get_logger(), "Device connected");
         }
 
         char cmpData_whoAreYou[] = "WHOAREYOU";
@@ -79,14 +89,38 @@ class server : public rclcpp::Node
           char buf_send[48];
           char hostname[32];
           gethostname(hostname, sizeof(hostname));
-          sprintf(buf_send , "MYNAMEIS%s" ,hostname);
+          snprintf(buf_send , 48,  "MYNAMEIS%s" ,hostname);
           sendto(send_socket, buf_send, strlen(buf_send), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
         }
 
-        char cmpData_whatIsYourNode[] = "WHATISYORNODE";
+        char cmpData_whatIsYourNode[] = "REQNODEPARAM";
         if(strcmp(buf , cmpData_whatIsYourNode) == 0){
           char buf_send[] = "MYNODEISsc_client/server";
           sendto(send_socket, buf_send, strlen(buf_send), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
+
+          rclcpp::sleep_for(10ms);
+
+          char buf_send_c1[64];
+          snprintf(buf_send_c1 , 64 , "C1LABEL%s" , param_c1_Label.c_str());
+          sendto(send_socket, buf_send_c1, strlen(buf_send_c1), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
+
+          rclcpp::sleep_for(10ms);
+
+          char buf_send_c2[64];
+          snprintf(buf_send_c2 , 64 , "C2LABEL%s" , param_c2_Label.c_str());
+          sendto(send_socket, buf_send_c2, strlen(buf_send_c2), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
+
+          rclcpp::sleep_for(10ms);
+
+          char buf_send_s1[64];
+          snprintf(buf_send_s1 , 64 , "S1LABEL%s" , param_s1_Label.c_str());
+          sendto(send_socket, buf_send_s1, strlen(buf_send_s1), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
+
+          rclcpp::sleep_for(10ms);
+
+          char buf_send_s2[64];
+          snprintf(buf_send_s2 , 64 , "S2LABEL%s" , param_s2_Label.c_str());
+          sendto(send_socket, buf_send_s2, strlen(buf_send_s2), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
         }
 
         char cmpData_ping[] = "PING";
@@ -95,20 +129,28 @@ class server : public rclcpp::Node
           sendto(send_socket, buf_send, strlen(buf_send), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
         }
 
-        if(create_msg(buf) > 0){
+        if(create_msg_controller(buf) > 0){
           auto pub_joy_msg = sensor_msgs::msg::Joy();
           pub_joy_msg.axes = axesData;
           pub_joy_msg.buttons = buttonData;
-          pub_->publish(pub_joy_msg);
+          pub_joy_->publish(pub_joy_msg);
+
+          auto pub_smartUI_msg = sensor_msgs::msg::Joy();
+          pub_smartUI_msg.axes = customSliderData;
+          pub_smartUI_msg.buttons = customButtonData;
+          pub_smart_ui_->publish(pub_smartUI_msg);
 
           axesData.resize(0);
           buttonData.resize(0);
+          customButtonData.resize(0);
+          customSliderData.resize(0);
         }
     });
   }
 
 private:
-    rclcpp::Publisher<sensor_msgs::msg::Joy>::SharedPtr pub_;
+    rclcpp::Publisher<sensor_msgs::msg::Joy>::SharedPtr pub_joy_;
+    rclcpp::Publisher<sensor_msgs::msg::Joy>::SharedPtr pub_smart_ui_;
     rclcpp::TimerBase::SharedPtr timer_;
 
     int rcv_sock;
@@ -122,9 +164,16 @@ private:
     char param_addr_c[IF_NAMESIZE];
     std::string param_nic;
     bool param_debug;
+    std::string param_c1_Label;
+    std::string param_c2_Label;
+    std::string param_s1_Label;
+    std::string param_s2_Label;
+
 
     std::vector<float> axesData;
     std::vector<int> buttonData;
+    std::vector<int> customButtonData;
+    std::vector<float> customSliderData;
 
     void get_ip(std::string nic){
       int fd_gi;
@@ -171,16 +220,29 @@ private:
         axesData.push_back(atof(buf));
     }
 
+    void my_atof2(char *data){
+        char buf[16];
+        snprintf(buf, 16, "%s", data+2);
+        customSliderData.push_back(atof(buf));
+    }
+
     void my_atob(char *data){
         if (data[2] == '1') {
           buttonData.push_back(1);
-        }else{
+        }else if(data[2] == '0') {
           buttonData.push_back(0);
         }
     }
 
+    void my_atob2(char *data){
+        if (data[2] == '1') {
+          customButtonData.push_back(1);
+        }else if(data[2] == '0') {
+          customButtonData.push_back(0);
+        }
+    }
 
-    int create_msg(char *data){
+    int create_msg_controller(char *data){
         char headerName[7];
         snprintf(headerName, 7, "%s", data);
         if(strcmp(headerName, "GCINFO")){
@@ -213,11 +275,15 @@ private:
                 snprintf(packetData, nextt - i, "%s" , &csvData[i+1]);
                 
                 if (header == 'J') {
-                    my_atofs(packetData, nextt - i);
+                  my_atofs(packetData, nextt - i);
                 }else if(header == 'T'){
-                    my_atof(packetData);
-                }else{
-                    my_atob(packetData);
+                  my_atof(packetData);
+                }else if(header == 'B'){
+                  my_atob(packetData);
+                }else if(header == 'C'){
+                  my_atob2(packetData);
+                }else if(header == 'S'){
+                  my_atof2(packetData);
                 }
             }
         }
