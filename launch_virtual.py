@@ -1,3 +1,4 @@
+from math import fabs
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
@@ -45,7 +46,7 @@ def generate_launch_description():
         Node(
             package='sc_client',
             executable='server',
-            parameters=[{'port' :64201},{'nic' : 'wlp3s0'},{"debug" : False}]
+            parameters=[{'nic' : 'eno1'} , {'c1' : 'Up'} , {'c2' : 'Down'} , {'s1' : 'Unused'} , {'s2' : 'Shot Power'} , {'debug' : False}]
         ),
         Node(
             package='joy',
