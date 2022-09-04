@@ -29,6 +29,7 @@ add_executable(joy2vel src/joy2vel.cpp)
 add_executable(vel2motor src/vel2motor.cpp)
 add_executable(physicalMDC src/physicalMDC.cpp)
 add_executable(serial src/serial.cpp)
+add_executable(robo2022 src/robo2022.cpp)
 
 
 target_include_directories(joy2vel PUBLIC
@@ -44,6 +45,10 @@ target_include_directories(physicalMDC PUBLIC
   $<INSTALL_INTERFACE:include>)
 
 target_include_directories(serial PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+target_include_directories(robo2022 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
@@ -74,6 +79,11 @@ ament_target_dependencies(
   std_msgs
 )
 
+ament_target_dependencies(
+  robo2022
+  rclcpp
+  geometry_msgs
+)
 
 install(TARGETS joy2vel
   DESTINATION lib/${PROJECT_NAME})
@@ -82,6 +92,8 @@ install(TARGETS vel2motor
 install(TARGETS physicalMDC
   DESTINATION lib/${PROJECT_NAME})
 install(TARGETS serial
+  DESTINATION lib/${PROJECT_NAME})
+install(TARGETS robo2022
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

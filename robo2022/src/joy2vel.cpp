@@ -11,25 +11,78 @@ class joy2vel : public rclcpp::Node
   public:
   joy2vel() : Node("joy2vel")
   {
-    sub_ = this->create_subscription<sensor_msgs::msg::Joy>(
-      "/joy" , 10 , std::bind(&joy2vel::topic_callback, this , _1)
+    sub_joy = this->create_subscription<sensor_msgs::msg::Joy>(
+      "/joy" , 10 , std::bind(&joy2vel::joy_topic_callback, this , _1)
     );
 
-    pub_ = this->create_publisher<geometry_msgs::msg::Twist>("robo2022/cmd_vel" , 10);
+    sub_smartui = this->create_subscription<sensor_msgs::msg::Joy>(
+      "/SmartUI" , 10 , std::bind(&joy2vel::smartui_callback , this , _1)
+    );
+
+    pub_cmd_vel_rover = this->create_publisher<geometry_msgs::msg::Twist>("robo2022/cmd_vel/rover" , 10);
+    pub_cmd_vel_updown = this->create_publisher<geometry_msgs::msg::Twist>("robo2022/cmd_vel/updown" , 10);
+    pub_cmd_vel_bomb = this->create_publisher<geometry_msgs::msg::Twist>("robo2022/cmd_vel/bomb" , 10);
+
+    shotPwr = geometry_msgs::msg::Twist();
   }
 
   private:
-  void topic_callback(const sensor_msgs::msg::Joy::SharedPtr get_msg) const
+
+  void 
+  joy_topic_callback(const sensor_msgs::msg::Joy::SharedPtr get_msg)
   {
     auto twist_msg = geometry_msgs::msg::Twist();
-    twist_msg.linear.x = (double)(get_msg->axes[0]) * -1;
-    twist_msg.linear.y = (double)(get_msg->axes[1]);
-    twist_msg.angular.z = (double)(get_msg->axes[3]);
-    pub_ -> publish(twist_msg);
+    twist_msg.linear.z = (double)(get_msg->axes[0]) * -1;
+    twist_msg.linear.x = (double)(get_msg->axes[1]);
+    twist_msg.angular.y = (double)(get_msg->axes[3]);
+    pub_cmd_vel_rover -> publish(twist_msg);
+
+    if(get_msg->axes[2] < 0){
+      pub_cmd_vel_bomb->publish(rtPwr);
+      return;
+    }
+
+    if(get_msg->axes[5] < 0){
+      pub_cmd_vel_bomb->publish(shotPwr);
+    }else{
+      pub_cmd_vel_bomb->publish(
+        geometry_msgs::msg::Twist()
+      );
+    }
   }
 
-  rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr sub_;
-  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_;
+  void
+  smartui_callback(const sensor_msgs::msg::Joy::SharedPtr get_msg)
+  {
+    auto pub_msg = geometry_msgs::msg::Twist();
+    shotPwr.linear.x = get_msg->axes[1];
+    rtPwr.linear.x = get_msg->axes[0] * -1;
+
+    if(get_msg->buttons[0] > get_msg->buttons[1])
+    {
+      //up
+      pub_msg.linear.y = 1;
+    }
+    else if(get_msg->buttons[0] < get_msg->buttons[1])
+    {
+      //down
+      pub_msg.linear.y = -1;
+    }
+
+    pub_cmd_vel_updown->publish(pub_msg);
+    
+  }
+
+  rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr sub_joy;
+  rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr sub_smartui;
+
+  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_cmd_vel_rover;
+  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_cmd_vel_updown;
+  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_cmd_vel_bomb;
+
+  geometry_msgs::msg::Twist shotPwr;
+  geometry_msgs::msg::Twist rtPwr;
+
 };
 
 int main(int argc, char * argv[])
