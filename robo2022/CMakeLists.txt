@@ -26,29 +26,18 @@ find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 
 add_executable(joy2vel src/joy2vel.cpp)
-add_executable(vel2motor src/vel2motor.cpp)
-add_executable(physicalMDC src/physicalMDC.cpp)
-add_executable(serial src/serial.cpp)
 add_executable(robo2022 src/robo2022.cpp)
-
+add_executable(mdc2022Connect src/mdc2022Connect.cpp)
 
 target_include_directories(joy2vel PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
-target_include_directories(vel2motor PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-  
-target_include_directories(physicalMDC PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-
-target_include_directories(serial PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-
 target_include_directories(robo2022 PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+target_include_directories(mdc2022Connect PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
@@ -61,39 +50,25 @@ ament_target_dependencies(
 )
 
 ament_target_dependencies(
-  vel2motor
-  rclcpp
-  geometry_msgs
-  std_msgs
-)
-
-ament_target_dependencies(
-  physicalMDC
-  rclcpp
-  std_msgs
-)
-
-ament_target_dependencies(
-  serial
-  rclcpp
-  std_msgs
-)
-
-ament_target_dependencies(
   robo2022
   rclcpp
   geometry_msgs
+  std_msgs
+)
+
+ament_target_dependencies(
+  mdc2022Connect
+  rclcpp
+  std_msgs
 )
 
 install(TARGETS joy2vel
   DESTINATION lib/${PROJECT_NAME})
-install(TARGETS vel2motor
-  DESTINATION lib/${PROJECT_NAME})
-install(TARGETS physicalMDC
-  DESTINATION lib/${PROJECT_NAME})
-install(TARGETS serial
-  DESTINATION lib/${PROJECT_NAME})
+
 install(TARGETS robo2022
+  DESTINATION lib/${PROJECT_NAME})
+  
+install(TARGETS mdc2022Connect
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

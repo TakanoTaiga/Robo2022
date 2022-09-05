@@ -10,6 +10,7 @@
 #include "std_msgs/msg/float32_multi_array.hpp"
 
 #define ROBO2022UTILS_L 0.565685
+#define VEL2MOTOR_SCALER 500
 
 using std::placeholders::_1;
 using namespace std::chrono_literals;
@@ -27,6 +28,11 @@ class robo2022utils
         vec[1] = -0.707106781 * get_msg->linear.z - 0.707106781 * get_msg->linear.x + ROBO2022UTILS_L * get_msg->angular.y;
         vec[2] =  0.707106781 * get_msg->linear.z - 0.707106781 * get_msg->linear.x + ROBO2022UTILS_L * get_msg->angular.y;
         vec[3] =  0.707106781 * get_msg->linear.z + 0.707106781 * get_msg->linear.x + ROBO2022UTILS_L * get_msg->angular.y;
+
+        vec[0] *= (float)(VEL2MOTOR_SCALER);
+        vec[1] *= (float)(VEL2MOTOR_SCALER);
+        vec[2] *= (float)(VEL2MOTOR_SCALER);
+        vec[3] *= (float)(VEL2MOTOR_SCALER);
 
         return vec;
     }
@@ -92,7 +98,7 @@ class robo2022 : public rclcpp::Node , public robo2022utils
             "robo2022/cmd_vel/bomb" , 4 , std::bind(&robo2022::topic_callback_cmd_vel_bomb , this , _1) // use linear z (y-up&right-hand)
         );
 
-        pub_power = this->create_publisher<std_msgs::msg::Float32MultiArray>("robo2022/cmd_pwr" , 4);
+        pub_power = this->create_publisher<std_msgs::msg::Float32MultiArray>("robo2022uil/cmd_pwr" , 4);
 
         // vec_histry_rover = geometry_msgs::msg::Twist();
         // vec_histry_up_down = geometry_msgs::msg::Twist();
@@ -155,8 +161,8 @@ class robo2022 : public rclcpp::Node , public robo2022utils
             motorPower.begin(),
             motorPower.end()
         );
-        pub_msg.data.push_back(vec_target_up_down->linear.y);
-        pub_msg.data.push_back(vec_target_bomb->linear.x);
+        pub_msg.data.push_back(vec_target_up_down->linear.y * 10);
+        pub_msg.data.push_back(vec_target_bomb->linear.x * 10);
 
         pub_power->publish(pub_msg);
 
