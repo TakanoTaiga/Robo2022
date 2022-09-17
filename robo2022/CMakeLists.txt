@@ -28,6 +28,14 @@ find_package(std_msgs REQUIRED)
 add_executable(joy2vel src/joy2vel.cpp)
 add_executable(robo2022 src/robo2022.cpp)
 add_executable(mdc2022Connect src/mdc2022Connect.cpp)
+add_executable(motion_smoother src/motion_smoother.cpp)
+add_executable(errorChecker src/errorChecker.cpp)
+
+
+
+#test tools
+add_executable(vecMonitor src/vec_monitor.cpp)
+
 
 target_include_directories(joy2vel PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -41,6 +49,18 @@ target_include_directories(mdc2022Connect PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
+target_include_directories(motion_smoother PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+target_include_directories(errorChecker PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+#test tools
+target_include_directories(vecMonitor PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(
   joy2vel
@@ -62,6 +82,25 @@ ament_target_dependencies(
   std_msgs
 )
 
+ament_target_dependencies(
+  motion_smoother
+  rclcpp
+  geometry_msgs
+)
+
+ament_target_dependencies(
+  errorChecker
+  rclcpp
+  std_msgs
+)
+
+#test tools
+ament_target_dependencies(
+  vecMonitor
+  rclcpp
+  geometry_msgs
+)
+
 install(TARGETS joy2vel
   DESTINATION lib/${PROJECT_NAME})
 
@@ -69,6 +108,15 @@ install(TARGETS robo2022
   DESTINATION lib/${PROJECT_NAME})
   
 install(TARGETS mdc2022Connect
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS vecMonitor
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS motion_smoother
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS errorChecker
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

@@ -9,77 +9,11 @@
 #include "geometry_msgs/msg/vector3.hpp"
 #include "std_msgs/msg/float32_multi_array.hpp"
 
-#define ROBO2022UTILS_L 0.565685
-#define VEL2MOTOR_SCALER 500
+#include "robo2022/robo2022uitls.hpp"
 
 using std::placeholders::_1;
 using namespace std::chrono_literals;
 
-class robo2022utils
-{
-    public:
-
-    std::vector<float>
-    vel2motor(
-        const geometry_msgs::msg::Twist::SharedPtr get_msg)
-    {
-        static std::vector<float> vec(4);
-        vec[0] = -0.707106781 * get_msg->linear.z + 0.707106781 * get_msg->linear.x + ROBO2022UTILS_L * get_msg->angular.y;
-        vec[1] = -0.707106781 * get_msg->linear.z - 0.707106781 * get_msg->linear.x + ROBO2022UTILS_L * get_msg->angular.y;
-        vec[2] =  0.707106781 * get_msg->linear.z - 0.707106781 * get_msg->linear.x + ROBO2022UTILS_L * get_msg->angular.y;
-        vec[3] =  0.707106781 * get_msg->linear.z + 0.707106781 * get_msg->linear.x + ROBO2022UTILS_L * get_msg->angular.y;
-
-        vec[0] *= (float)(VEL2MOTOR_SCALER);
-        vec[1] *= (float)(VEL2MOTOR_SCALER);
-        vec[2] *= (float)(VEL2MOTOR_SCALER);
-        vec[3] *= (float)(VEL2MOTOR_SCALER);
-
-        return vec;
-    }
-
-    // double
-    // makeScalerFromVector3(
-    //     geometry_msgs::msg::Vector3 vec
-    // ){
-    //     return std::sqrt(
-    //         std::pow(vec.x , 2) +
-    //         std::pow(vec.y , 2) +
-    //         std::pow(vec.z , 2)
-    //         );
-    // }
-
-    // double
-    // vector3toScaler(
-    //     const geometry_msgs::msg::Vector3 history_vec3,
-    //     const geometry_msgs::msg::Vector3 target_vec3
-    // ){
-    //     auto distance_vec = geometry_msgs::msg::Vector3();
-    //     distance_vec.x = history_vec3.x - target_vec3.x;
-    //     distance_vec.y = history_vec3.y - target_vec3.y;
-    //     distance_vec.z = history_vec3.z - target_vec3.z;
-
-    //     return makeScalerFromVector3(distance_vec);
-    // }
-
-    // geometry_msgs::msg::Vector3
-    // vectorFixer(
-    //     geometry_msgs::msg::Vector3 get_vec
-    // ){
-        
-    // }
-
-    // geometry_msgs::msg::Vector3
-    // safeVecCreater(
-    //    const geometry_msgs::msg::Vector3 history_vec3,
-    //     const geometry_msgs::msg::Vector3 target_vec3
-    // ){
-    //     double scale = 
-    //     makeScalerFromVector3(history_vec3) /
-    //     makeScalerFromVector3(target_vec3);
-
-
-    // }
-};
 
 class robo2022 : public rclcpp::Node , public robo2022utils
 {
@@ -98,15 +32,7 @@ class robo2022 : public rclcpp::Node , public robo2022utils
             "robo2022/cmd_vel/bomb" , 4 , std::bind(&robo2022::topic_callback_cmd_vel_bomb , this , _1) // use linear z (y-up&right-hand)
         );
 
-        pub_power = this->create_publisher<std_msgs::msg::Float32MultiArray>("robo2022uil/cmd_pwr" , 4);
-
-        // vec_histry_rover = geometry_msgs::msg::Twist();
-        // vec_histry_up_down = geometry_msgs::msg::Twist();
-        // vec_histry_bomb = geometry_msgs::msg::Twist();
-
-        // this->declare_parameter<double>("max_vel" , 1.0);
-        // this->get_parameter("max_vel" , param_max_velocity);
-
+        pub_power = this->create_publisher<std_msgs::msg::Float32MultiArray>("robo2022util/cmd_pwr" , 4);
     }
 
     private:
@@ -137,19 +63,6 @@ class robo2022 : public rclcpp::Node , public robo2022utils
 
     void
     pwr_callback_func(){
-        // auto just_time_cmd_vel_rover = geometry_msgs::msg::Twist();
-        // auto just_time_cmd_vel_up_down = geometry_msgs::msg::Twist();
-        // auto just_time_cmd_vel_bomb = geometry_msgs::msg::Twist();
-
-        // if(
-        // param_max_velocity > 
-        // vector3toScaler(vec_histry_rover.linear , vec_target_rover->linear))
-        // {
-        //     just_time_cmd_vel_rover.linear = vec_target_rover->linear;
-        // }else{
-
-        // }
-
         if(vec_target_rover == NULL){return;}
         if(vec_target_up_down == NULL){return;}
         if(vec_target_bomb == NULL){return;}
@@ -179,13 +92,8 @@ class robo2022 : public rclcpp::Node , public robo2022utils
     geometry_msgs::msg::Twist::SharedPtr vec_target_up_down;
     geometry_msgs::msg::Twist::SharedPtr vec_target_bomb;
 
-//     geometry_msgs::msg::Twist vec_histry_rover;
-//     geometry_msgs::msg::Twist vec_histry_up_down;
-//     geometry_msgs::msg::Twist vec_histry_bomb;
-
     rclcpp::TimerBase::SharedPtr pwr_callback_timer;
 
-//     double param_max_velocity;
 };
 
 int main(int argc , char * argv[])
