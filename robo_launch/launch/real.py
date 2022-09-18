@@ -33,6 +33,11 @@ def generate_launch_description():
         ),
         Node(
             package='robo2022',
+            executable='errorChecker',
+            on_exit=actions.Shutdown(),
+        ),
+        Node(
+            package='robo2022',
             executable='mdc2022Connect',
             parameters=[{'debug' : False}],
             on_exit=actions.Shutdown(),
