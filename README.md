@@ -2,6 +2,8 @@
 
 more info --> [2022Robokon_A_Team/architecture.md](https://github.com/TakanoTaiga/2022Robokon_A_Team/blob/main/architecture.md)
 
+info2 --> [TakanoTaiga/robo2022doc](https://github.com/TakanoTaiga/robo2022doc)
+
 ## Build
 
 install dependencies:
