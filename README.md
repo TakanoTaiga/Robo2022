@@ -14,7 +14,7 @@ Create a workspace and clone repos:
 ```
 mkdir -p ~/robo2022_ws/src
 cd ~/robo2022_ws/src
-git clone https://github.com/TakanoTaiga/2022Robokon_A_Team.git
+git clone https://github.com/TakanoTaiga/Robo2022.git
 ```
 Build the code in the workspace
 ```
@@ -26,10 +26,10 @@ colcon build
 Real
 ```
 source ~/robo2022_ws/install/setup.sh
-ros2 launch ~/robo2022_ws/src/2022Robokon_A_Team/launch_real.py
+ros2 launch robo_launch real.py
 ```
-Virtual
+Sim
 ```
 source ~/robo2022_ws/install/setup.sh
-ros2 launch ~/robo2022_ws/src/2022Robokon_A_Team/launch_virtual.py
+ros2 launch robo_launch sim.py
 ```
