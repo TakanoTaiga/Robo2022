@@ -5,7 +5,7 @@ coming soon
 
 ## Node architecture (sim version)
 
-![robo2022](https://user-images.githubusercontent.com/53041471/188319568-884015d5-740d-474c-8153-f99ce73b5e3d.png)
+![v0 1](https://user-images.githubusercontent.com/53041471/190939727-3ce212b5-3caf-41e9-9df2-491ad7589c51.png)
 
 
 
