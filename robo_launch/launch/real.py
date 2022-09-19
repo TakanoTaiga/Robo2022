@@ -16,7 +16,7 @@ def generate_launch_description():
         Node(
             package='sc_client',
             executable='server',
-            parameters=[{'nic' : 'wlp3s0'} , {'c1' : 'Up'} , {'c2' : 'Down'} , {'s1' : 'Return Power'} , {'s2' : 'Shot Power'} , {'debug' : False}],
+            parameters=[{'nic' : 'wlp3s0'} , {'c1' : 'Up'} , {'c2' : 'Down'} , {'s1' : 'Fir power'} , {'s2' : 'N/A'} , {'debug' : False}],
             on_exit=actions.Shutdown(),
         ),
         Node(
@@ -33,13 +33,30 @@ def generate_launch_description():
         ),
         Node(
             package='robo2022',
+            executable='joy2vel4b',
+            remappings=[
+                ('/joy' , '/sc_client/joy'),
+                ('/SmartUI' , '/sc_client/SmartUI')
+            ],
+            on_exit=actions.Shutdown(),
+        ),
+        Node(
+            package='robo2022',
+            executable='b_team',
+            remappings=[
+                ('/joy' , '/sc_client/joy'),
+                ('/SmartUI' , '/sc_client/SmartUI')
+            ],
+            on_exit=actions.Shutdown(),
+        ),
+        Node(
+            package='robo2022',
             executable='errorChecker',
             on_exit=actions.Shutdown(),
         ),
         Node(
             package='robo2022',
             executable='mdc2022Connect',
-            parameters=[{'debug' : False}],
             on_exit=actions.Shutdown(),
-        )
+        ),
     ])

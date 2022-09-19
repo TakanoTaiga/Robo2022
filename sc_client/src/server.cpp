@@ -96,25 +96,25 @@ class server : public rclcpp::Node
           char buf_send[] = "MYNODEISsc_client/server";
           sendto(send_socket, buf_send, strlen(buf_send), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
 
-          rclcpp::sleep_for(10ms);
+          rclcpp::sleep_for(100ms);
 
           char buf_send_c1[64];
           snprintf(buf_send_c1 , 64 , "C1LABEL%s" , param_c1_Label.c_str());
           sendto(send_socket, buf_send_c1, strlen(buf_send_c1), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
 
-          rclcpp::sleep_for(10ms);
+          rclcpp::sleep_for(100ms);
 
           char buf_send_c2[64];
           snprintf(buf_send_c2 , 64 , "C2LABEL%s" , param_c2_Label.c_str());
           sendto(send_socket, buf_send_c2, strlen(buf_send_c2), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
 
-          rclcpp::sleep_for(10ms);
+          rclcpp::sleep_for(100ms);
 
           char buf_send_s1[64];
           snprintf(buf_send_s1 , 64 , "S1LABEL%s" , param_s1_Label.c_str());
           sendto(send_socket, buf_send_s1, strlen(buf_send_s1), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
 
-          rclcpp::sleep_for(10ms);
+          rclcpp::sleep_for(100ms);
 
           char buf_send_s2[64];
           snprintf(buf_send_s2 , 64 , "S2LABEL%s" , param_s2_Label.c_str());

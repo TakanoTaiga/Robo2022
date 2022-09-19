@@ -38,7 +38,7 @@ class mdc2022Connect : public rclcpp::Node
         }
 
         sub_ = this->create_subscription<std_msgs::msg::Float32MultiArray>(
-            "robo2022uil/cmd_pwr" , 10 , std::bind(&mdc2022Connect::topic_callback, this , _1)
+            "robo2022util/cmd_pwr" , 10 , std::bind(&mdc2022Connect::topic_callback, this , _1)
         );
     }
 
