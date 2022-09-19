@@ -14,7 +14,7 @@ Create a workspace and clone repos:
 ```
 mkdir -p ~/robo2022_ws/src
 cd ~/robo2022_ws/src
-git clone https://github.com/TakanoTaiga/2022Robokon_A_Team.git
+git clone https://github.com/TakanoTaiga/Robo2022.git
 ```
 Build the code in the workspace
 ```
