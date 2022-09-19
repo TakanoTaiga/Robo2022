@@ -33,6 +33,24 @@ def generate_launch_description():
         ),
         Node(
             package='robo2022',
+            executable='joy2vel4b',
+            remappings=[
+                ('/joy' , '/sc_client/joy'),
+                ('/SmartUI' , '/sc_client/SmartUI')
+            ],
+            on_exit=actions.Shutdown(),
+        ),
+        Node(
+            package='robo2022',
+            executable='b_team',
+            remappings=[
+                ('/joy' , '/sc_client/joy'),
+                ('/SmartUI' , '/sc_client/SmartUI')
+            ],
+            on_exit=actions.Shutdown(),
+        ),
+        Node(
+            package='robo2022',
             executable='errorChecker',
             on_exit=actions.Shutdown(),
         ),

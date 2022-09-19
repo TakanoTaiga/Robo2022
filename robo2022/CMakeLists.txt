@@ -31,7 +31,9 @@ add_executable(mdc2022Connect src/mdc2022Connect.cpp)
 add_executable(motion_smoother src/motion_smoother.cpp)
 add_executable(errorChecker src/errorChecker.cpp)
 
-
+#for b team
+add_executable(b_team src/b_team.cpp)
+add_executable(joy2vel4b src/joy2vel4b.cpp)
 
 #test tools
 add_executable(vecMonitor src/vec_monitor.cpp)
@@ -54,6 +56,15 @@ target_include_directories(motion_smoother PUBLIC
   $<INSTALL_INTERFACE:include>)
 
 target_include_directories(errorChecker PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+#for b team
+target_include_directories(b_team PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+target_include_directories(joy2vel4b PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
@@ -94,6 +105,21 @@ ament_target_dependencies(
   std_msgs
 )
 
+#for b team
+ament_target_dependencies(
+  b_team
+  rclcpp
+  std_msgs
+  geometry_msgs
+)
+
+ament_target_dependencies(
+  joy2vel4b
+  rclcpp
+  geometry_msgs
+  sensor_msgs
+)
+
 #test tools
 ament_target_dependencies(
   vecMonitor
@@ -117,6 +143,12 @@ install(TARGETS motion_smoother
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS errorChecker
+  DESTINATION lib/${PROJECT_NAME})
+#for b team
+install(TARGETS b_team
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS joy2vel4b
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
