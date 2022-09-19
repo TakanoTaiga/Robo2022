@@ -49,38 +49,6 @@ class robo2022utils
             );
     }
 
-    // double
-    // vector3toScaler(
-    //     const geometry_msgs::msg::Vector3 history_vec3,
-    //     const geometry_msgs::msg::Vector3 target_vec3
-    // ){
-    //     auto distance_vec = geometry_msgs::msg::Vector3();
-    //     distance_vec.x = history_vec3.x - target_vec3.x;
-    //     distance_vec.y = history_vec3.y - target_vec3.y;
-    //     distance_vec.z = history_vec3.z - target_vec3.z;
-
-    //     return makeScalerFromVector3(distance_vec);
-    // }
-
-    // geometry_msgs::msg::Vector3
-    // vectorFixer(
-    //     geometry_msgs::msg::Vector3 get_vec
-    // ){
-        
-    // }
-
-    // geometry_msgs::msg::Vector3
-    // safeVecCreater(
-    //    const geometry_msgs::msg::Vector3 history_vec3,
-    //     const geometry_msgs::msg::Vector3 target_vec3
-    // ){
-    //     double scale = 
-    //     makeScalerFromVector3(history_vec3) /
-    //     makeScalerFromVector3(target_vec3);
-
-
-    //}
-
     std::string 
     getDatetimeStr() {
     time_t t = time(nullptr);

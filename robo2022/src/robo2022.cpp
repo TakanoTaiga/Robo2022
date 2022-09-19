@@ -28,9 +28,6 @@ class robo2022 : public rclcpp::Node , public robo2022utils
             "robo2022/cmd_vel/updown" , 4 , std::bind(&robo2022::topic_callback_cmd_vel_up_down , this , _1) // use linear y (y-up&right-hand)
         );
 
-        sub_cmd_vel_bomb = this->create_subscription<geometry_msgs::msg::Twist>(
-            "robo2022/cmd_vel/bomb" , 4 , std::bind(&robo2022::topic_callback_cmd_vel_bomb , this , _1) // use linear z (y-up&right-hand)
-        );
 
         pub_power = this->create_publisher<std_msgs::msg::Float32MultiArray>("robo2022util/cmd_pwr" , 4);
     }
@@ -53,19 +50,11 @@ class robo2022 : public rclcpp::Node , public robo2022utils
         pwr_callback_func();
     }
 
-    void 
-    topic_callback_cmd_vel_bomb(
-        const geometry_msgs::msg::Twist::SharedPtr get_msg)
-    {
-        vec_target_bomb = get_msg;
-        pwr_callback_func();
-    }
 
     void
     pwr_callback_func(){
         if(vec_target_rover == NULL){return;}
         if(vec_target_up_down == NULL){return;}
-        if(vec_target_bomb == NULL){return;}
 
         auto motorPower = vel2motor(vec_target_rover);
         auto pub_msg = std_msgs::msg::Float32MultiArray();
@@ -74,8 +63,7 @@ class robo2022 : public rclcpp::Node , public robo2022utils
             motorPower.begin(),
             motorPower.end()
         );
-        pub_msg.data.push_back(vec_target_up_down->linear.y * 10);
-        pub_msg.data.push_back(vec_target_bomb->linear.x * 10);
+        pub_msg.data.push_back(vec_target_up_down->linear.y * 100);
 
         pub_power->publish(pub_msg);
 
@@ -84,13 +72,11 @@ class robo2022 : public rclcpp::Node , public robo2022utils
 
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_cmd_vel_rover;
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_cmd_vel_up_down;
-    rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_cmd_vel_bomb;
 
     rclcpp::Publisher<std_msgs::msg::Float32MultiArray>::SharedPtr pub_power;
 
     geometry_msgs::msg::Twist::SharedPtr vec_target_rover;
     geometry_msgs::msg::Twist::SharedPtr vec_target_up_down;
-    geometry_msgs::msg::Twist::SharedPtr vec_target_bomb;
 
     rclcpp::TimerBase::SharedPtr pwr_callback_timer;
 

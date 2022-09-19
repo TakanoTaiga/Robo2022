@@ -48,8 +48,7 @@ class motion_smoother : public rclcpp::Node
   void
   timer_callback(){
     auto rtVec = RESET_TWIST;
-  //5.2 4
-  //4 5.2
+
     double vec = target.linear.x - histry.linear.x;
     vec = std::sqrt(vec * vec);
     if(vec > 0.1){
@@ -63,8 +62,6 @@ class motion_smoother : public rclcpp::Node
     }else{
       rtVec.linear.x = target.linear.x;
     }
-
-
 
     histry.linear.x = rtVec.linear.x;
     pub_vel->publish(rtVec);
