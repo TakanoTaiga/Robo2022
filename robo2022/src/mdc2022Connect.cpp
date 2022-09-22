@@ -6,13 +6,18 @@
 #include <termios.h>
 #include <stdio.h>
 #include <math.h>
+#include <vector>
 
 
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/float32_multi_array.hpp>
 
+#include "robo2022/macros.hpp"
+
 #define PI 3.14159265359
 #define MAX_BUF_SIZE 128
+
+#define ASYNC_SYNC ASYNC
 
 using std::placeholders::_1;
 
@@ -22,8 +27,9 @@ class mdc2022Connect : public rclcpp::Node
     mdc2022Connect() : Node("mdc2022Connect")
     {
         this->declare_parameter<std::string>("device_file" , "/dev/ttyACM0");
-        this->get_parameter("device_file" , deviceName_str);
+        this->declare_parameter<bool>("sync",true);
         this->declare_parameter<bool>("debug" , false);
+        this->get_parameter("device_file" , deviceName_str);
         this->get_parameter("debug" , param_debug);
 
 
@@ -31,36 +37,88 @@ class mdc2022Connect : public rclcpp::Node
         strcpy(deviceName , deviceName_str.c_str());
         this->fd1 = this->open_serial(deviceName);
         if(this->fd1 < 0){
-            RCLCPP_INFO(this->get_logger() , "Serial port failed to execute script esptool");
+            RCLCPP_ERROR(this->get_logger() , "Serial port failed to execute script esptool");
             rclcpp::shutdown();
         }else{
             RCLCPP_INFO(this->get_logger(), "Serial port was connected");
         }
 
-        sub_ = this->create_subscription<std_msgs::msg::Float32MultiArray>(
-            "robo2022util/cmd_pwr" , 10 , std::bind(&mdc2022Connect::topic_callback, this , _1)
+        sub_sp = this->create_subscription<std_msgs::msg::Float32MultiArray>(
+            "robo2022util/cmd_pwr" , 10 , std::bind(&mdc2022Connect::topic_callback_sp, this , _1)
         );
+
+        sub_team_support = this->create_subscription<std_msgs::msg::Float32MultiArray>(
+            "robo2022util/team/cmd_pwr" , 10 , std::bind(&mdc2022Connect::topic_callback_team_support,this,_1)
+        );
+
     }
 
     private:
 
-    void topic_callback(const std_msgs::msg::Float32MultiArray::SharedPtr get_msg)
+    void topic_callback_sp(const std_msgs::msg::Float32MultiArray::SharedPtr msg){
+        if(msg->data.size() != 5){
+            RCLCPP_ERROR(this->get_logger() , "callback-sp msg data count error");
+            return;
+        }
+        vec_sp_history.resize(0);
+        vec_sp_history = msg->data;
+#if ASYNC_SYNC
+        is_sp_come = true;
+
+        if(is_ts_come){
+#endif
+            auto vec_data = vec_sp_history;
+            vec_data.insert(vec_data.end() , vec_ts_history.begin() , vec_ts_history.end());
+            topic_compose(vec_data);
+#if ASYNC_SYNC
+            is_sp_come = false;
+            is_ts_come = false;
+        }
+#endif
+    }
+    
+    void topic_callback_team_support(const std_msgs::msg::Float32MultiArray::SharedPtr msg){
+        if(msg->data.size() == 0){
+            RCLCPP_ERROR(this->get_logger() , "callback_team_support msg data count error");
+            return;
+        }
+        vec_ts_history.resize(0);
+        vec_ts_history = msg->data;
+
+#if ASYNC_SYNC
+        is_ts_come = true;
+
+        if(is_sp_come){
+#endif
+            auto vec_data = vec_sp_history;
+            vec_data.insert(vec_data.end() , vec_ts_history.begin() , vec_ts_history.end());
+            topic_compose(vec_data);
+
+#if ASYNC_SYNC
+            is_sp_come = false;
+            is_ts_come = false;
+        }
+#endif
+    }
+
+    void topic_compose(const std::vector<float> vec_data)
     {
+        auto vec = vec_data;
         char buf[MAX_BUF_SIZE] = "M:";
         size_t offset = strlen(buf);
 
-        for(size_t i = 0 ; i < get_msg->data.size() ; i++){
-            if(get_msg->data[i] > 1000){
-                get_msg->data[i] = 0;
+        for(size_t i = 0 ; i < vec.size() ; i++){
+            if(vec[i] > 1000){
+                vec[i] = 0;
             }
             int flag = 1;
-            if(get_msg->data[i] < 0){
-                get_msg->data[i] *= -1;
+            if(vec[i] < 0){
+                vec[i] *= -1;
                 flag = 0;
             }
 
             char data_str[12];
-            snprintf(data_str , 12 , "%d:%d:" , flag , (int)(get_msg->data[i]));
+            snprintf(data_str , 12 , "%d:%d:" , flag , (int)(vec[i]));
             memmove(buf+offset , data_str , strlen(data_str));
             offset += strlen(data_str);
         }
@@ -77,11 +135,20 @@ class mdc2022Connect : public rclcpp::Node
         }
     }
 
-    rclcpp::Subscription<std_msgs::msg::Float32MultiArray>::SharedPtr sub_;
+    rclcpp::Subscription<std_msgs::msg::Float32MultiArray>::SharedPtr sub_sp;
+    rclcpp::Subscription<std_msgs::msg::Float32MultiArray>::SharedPtr sub_team_support;
+
+    std::vector<float> vec_sp_history;
+    std::vector<float> vec_ts_history;
+    bool is_sp_come = false;
+    bool is_ts_come = false;
+
+
 
     std::string deviceName_str;
 
     bool param_debug;
+    // bool param_is_sync;
 
     int open_serial(char *device_name)
     {

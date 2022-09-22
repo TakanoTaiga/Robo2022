@@ -58,5 +58,8 @@ def generate_launch_description():
             package='robo2022',
             executable='mdc2022Connect',
             on_exit=actions.Shutdown(),
+            remappings=[
+                ('robo2022util/team/cmd_pwr' , 'robo2022util/b/cmd_pwr'),
+            ],
         ),
     ])
