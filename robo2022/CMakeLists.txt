@@ -31,6 +31,9 @@ add_executable(mdc2022Connect src/mdc2022Connect.cpp)
 add_executable(motion_smoother src/motion_smoother.cpp)
 add_executable(errorChecker src/errorChecker.cpp)
 
+#for a team
+add_executable(a_team src/a_team.cpp)
+
 #for b team
 add_executable(b_team src/b_team.cpp)
 add_executable(joy2vel4b src/joy2vel4b.cpp)
@@ -56,6 +59,11 @@ target_include_directories(motion_smoother PUBLIC
   $<INSTALL_INTERFACE:include>)
 
 target_include_directories(errorChecker PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+#for a team
+target_include_directories(a_team PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
@@ -105,6 +113,14 @@ ament_target_dependencies(
   std_msgs
 )
 
+#for a team 
+ament_target_dependencies(
+  a_team
+  rclcpp
+  std_msgs
+  geometry_msgs
+)
+
 #for b team
 ament_target_dependencies(
   b_team
@@ -144,6 +160,11 @@ install(TARGETS motion_smoother
 
 install(TARGETS errorChecker
   DESTINATION lib/${PROJECT_NAME})
+
+#for a team
+install(TARGETS a_team
+  DESTINATION lib/${PROJECT_NAME})
+
 #for b team
 install(TARGETS b_team
   DESTINATION lib/${PROJECT_NAME})

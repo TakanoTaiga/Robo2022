@@ -56,7 +56,7 @@ class b_team : public rclcpp::Node
 
         auto pub_msg = std_msgs::msg::Float32MultiArray();
         pub_msg.data.push_back(vec_record_belt->linear.x * 10);
-        pub_msg.data.push_back(vec_record_fir->linear.x * 10);
+        pub_msg.data.push_back(vec_record_fir->linear.x * -10);
         
         pub_power->publish(pub_msg);
     }

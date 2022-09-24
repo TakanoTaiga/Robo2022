@@ -17,7 +17,7 @@
 #define PI 3.14159265359
 #define MAX_BUF_SIZE 128
 
-#define ASYNC_SYNC ASYNC
+#define ASYNC_SYNC SYNC
 
 using std::placeholders::_1;
 
@@ -27,7 +27,6 @@ class mdc2022Connect : public rclcpp::Node
     mdc2022Connect() : Node("mdc2022Connect")
     {
         this->declare_parameter<std::string>("device_file" , "/dev/ttyACM0");
-        this->declare_parameter<bool>("sync",true);
         this->declare_parameter<bool>("debug" , false);
         this->get_parameter("device_file" , deviceName_str);
         this->get_parameter("debug" , param_debug);
@@ -38,7 +37,6 @@ class mdc2022Connect : public rclcpp::Node
         this->fd1 = this->open_serial(deviceName);
         if(this->fd1 < 0){
             RCLCPP_ERROR(this->get_logger() , "Serial port failed to execute script esptool");
-            rclcpp::shutdown();
         }else{
             RCLCPP_INFO(this->get_logger(), "Serial port was connected");
         }
@@ -126,8 +124,7 @@ class mdc2022Connect : public rclcpp::Node
 
         int error = write(fd1,buf,strlen(buf));
         if(error < 0){
-            RCLCPP_INFO(this->get_logger(), "Serial connection faild");
-            rclcpp::shutdown();
+            RCLCPP_ERROR(this->get_logger(), "Serial connection faild");
         }
         
         if(param_debug){

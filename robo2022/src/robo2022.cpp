@@ -63,7 +63,7 @@ class robo2022 : public rclcpp::Node , public robo2022utils
             motorPower.begin(),
             motorPower.end()
         );
-        pub_msg.data.push_back(vec_target_up_down->linear.y * 100);
+        pub_msg.data.push_back(vec_target_up_down->linear.y * 500);
 
         pub_power->publish(pub_msg);
 

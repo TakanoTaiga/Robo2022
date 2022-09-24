@@ -1,2 +1,2 @@
-#define ASYNC true
-#define SYNC false
+#define ASYNC false
+#define SYNC true
