@@ -13,6 +13,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/joy.hpp"
+#include "std_msgs/msg/string.hpp"
 
 using std::placeholders::_1;
 using namespace std::chrono_literals;
@@ -45,6 +46,13 @@ class server : public rclcpp::Node
 
     pub_joy_ = this->create_publisher<sensor_msgs::msg::Joy>("sc_client/joy" , 1);
     pub_smart_ui_ = this->create_publisher<sensor_msgs::msg::Joy>("sc_client/SmartUI" , 1);
+
+    sub_smartui_info = this->create_subscription<std_msgs::msg::String>(
+      "sc_client/info" , 10 , std::bind(&server::smartui_info_callback, this , _1)
+    );
+    sub_smartui_error = this->create_subscription<std_msgs::msg::String>(
+      "sc_client/error" , 10 , std::bind(&server::smartui_error_callback, this , _1)
+    );
 
     rcv_sock = socket(AF_INET, SOCK_DGRAM, 0);
     send_socket = socket(AF_INET, SOCK_DGRAM, 0);
@@ -125,6 +133,10 @@ class server : public rclcpp::Node
         if(strcmp(buf , cmpData_ping) == 0){
           char buf_send[] = "CHECK";
           sendto(send_socket, buf_send, strlen(buf_send), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
+
+          rclcpp::sleep_for(100ms);
+
+          smartui_msg_callback();
         }
 
         if(create_msg_controller(buf) > 0){
@@ -149,7 +161,12 @@ class server : public rclcpp::Node
 private:
     rclcpp::Publisher<sensor_msgs::msg::Joy>::SharedPtr pub_joy_;
     rclcpp::Publisher<sensor_msgs::msg::Joy>::SharedPtr pub_smart_ui_;
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_smartui_info;
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_smartui_error;
     rclcpp::TimerBase::SharedPtr timer_;
+
+    rclcpp::TimerBase::SharedPtr smartuiTimer;
+
 
     int rcv_sock;
     int send_socket;
@@ -172,6 +189,45 @@ private:
     std::vector<int> buttonData;
     std::vector<int> customButtonData;
     std::vector<float> customSliderData;
+
+    std_msgs::msg::String::SharedPtr smartui_info_msg;
+    std_msgs::msg::String::SharedPtr smartui_error_msg;
+
+    void
+    smartui_info_callback(
+      const std_msgs::msg::String::SharedPtr msg){
+        smartui_info_msg = msg;
+        //char buf_smartui_[64];
+        //snprintf(buf_smartui_ , 64 , "SINFO%s" , msg->data.c_str());
+        //sendto(send_socket, buf_smartui_, strlen(buf_smartui_), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
+    }
+
+    void
+    smartui_error_callback(
+      const std_msgs::msg::String::SharedPtr msg){
+        smartui_error_msg = msg;
+        //char buf_smartui_[64];
+        //snprintf(buf_smartui_ , 64 , "SEMER%s" , msg->data.c_str());
+        //sendto(send_socket, buf_smartui_, strlen(buf_smartui_), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
+    }
+
+    void
+    smartui_msg_callback(){
+      if(smartui_error_msg != NULL){
+        char buf_smartui_[64];
+        snprintf(buf_smartui_ , 64 , "SEMER%s" , smartui_error_msg->data.c_str());
+        sendto(send_socket, buf_smartui_, strlen(buf_smartui_), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
+      }
+      
+
+      if(smartui_info_msg != NULL){
+        rclcpp::sleep_for(100ms);
+
+        char buf_smartui_2[64];
+        snprintf(buf_smartui_2 , 64 , "SINFO%s" , smartui_info_msg->data.c_str());
+        sendto(send_socket, buf_smartui_2, strlen(buf_smartui_2), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
+      }
+    }
 
     void get_ip(std::string nic){
       int fd_gi;
