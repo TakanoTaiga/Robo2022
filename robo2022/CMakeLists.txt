@@ -31,19 +31,6 @@ add_executable(robo2022 src/robo2022.cpp)
 add_executable(mdc2022Connect src/mdc2022Connect.cpp)
 add_executable(motion_smoother src/motion_smoother.cpp)
 add_executable(errorChecker src/errorChecker.cpp)
-add_executable(safetyLidar src/safetyLidar.cpp)
-
-
-#for a team
-add_executable(a_team src/a_team.cpp)
-
-#for b team
-add_executable(b_team src/b_team.cpp)
-add_executable(joy2vel4b src/joy2vel4b.cpp)
-
-#test tools
-add_executable(vecMonitor src/vec_monitor.cpp)
-add_executable(debug src/debug.cpp)
 
 
 target_include_directories(joy2vel PUBLIC
@@ -66,32 +53,7 @@ target_include_directories(errorChecker PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
-target_include_directories(safetyLidar PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
 
-#for a team
-target_include_directories(a_team PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-
-#for b team
-target_include_directories(b_team PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-
-target_include_directories(joy2vel4b PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-
-#test tools
-target_include_directories(vecMonitor PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-
-target_include_directories(debug PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(
   joy2vel
@@ -125,47 +87,7 @@ ament_target_dependencies(
   std_msgs
 )
 
-ament_target_dependencies(
-  safetyLidar
-  rclcpp
-  sensor_msgs
-)
 
-#for a team 
-ament_target_dependencies(
-  a_team
-  rclcpp
-  std_msgs
-  geometry_msgs
-)
-
-#for b team
-ament_target_dependencies(
-  b_team
-  rclcpp
-  std_msgs
-  geometry_msgs
-)
-
-ament_target_dependencies(
-  joy2vel4b
-  rclcpp
-  geometry_msgs
-  sensor_msgs
-)
-
-#test tools
-ament_target_dependencies(
-  vecMonitor
-  rclcpp
-  geometry_msgs
-)
-
-ament_target_dependencies(
-  debug
-  rclcpp
-  std_msgs
-)
 
 install(TARGETS joy2vel
   DESTINATION lib/${PROJECT_NAME})
@@ -182,26 +104,7 @@ install(TARGETS motion_smoother
 install(TARGETS errorChecker
   DESTINATION lib/${PROJECT_NAME})
 
-install(TARGETS safetyLidar
-  DESTINATION lib/${PROJECT_NAME})
 
-#for a team
-install(TARGETS a_team
-  DESTINATION lib/${PROJECT_NAME})
-
-#for b team
-install(TARGETS b_team
-  DESTINATION lib/${PROJECT_NAME})
-
-install(TARGETS joy2vel4b
-  DESTINATION lib/${PROJECT_NAME})
-
-#test tools
-install(TARGETS vecMonitor
-  DESTINATION lib/${PROJECT_NAME})
-
-install(TARGETS debug
-  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

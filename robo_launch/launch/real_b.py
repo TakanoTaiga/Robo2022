@@ -1,5 +1,7 @@
 from launch import LaunchDescription , actions
 from launch_ros.actions import Node
+from ament_index_python.packages import get_package_share_directory
+import os.path
 
 
 def generate_launch_description():
@@ -10,6 +12,9 @@ def generate_launch_description():
             executable='server',
             parameters=[{'nic' : 'wlp3s0'} , {'c1' : 'Up'} , {'c2' : 'Down'} , {'s1' : 'Fir power'} , {'s2' : 'N/A'} , {'debug' : False}],
             on_exit=actions.Shutdown(),
+            remappings=[
+                ('sc_client/error' , 'safe_extensions/error'),
+            ]
         ),
         Node(
             package='joy',
@@ -30,7 +35,7 @@ def generate_launch_description():
             on_exit=actions.Shutdown(),
         ),
         Node(
-            package='robo2022',
+            package='team_support',
             executable='joy2vel4b',
             remappings=[
                 ('/joy' , '/sc_client/joy'),
@@ -82,13 +87,13 @@ def generate_launch_description():
             
         ),
         Node(
-            package='robo2022',
+            package='team_support',
             executable='b_team',
             remappings=[
                 ('/joy' , '/sc_client/joy'),
                 ('/SmartUI' , '/sc_client/SmartUI'),
                 ('/robo2022/cmd_vel/b/belt' ,  '/smoothed_cmd_vel/b/belt'),
-                ('/robo2022/cmd_vel/b/fir' ,  '/smoothed_cmd_vel/b/fir')
+                ('/robo2022/cmd_vel/b/fir' ,  '/smoothed_cmd_vel/b/fir'),
             ],
         ),
         
@@ -97,6 +102,7 @@ def generate_launch_description():
             package='robo2022',
             executable='mdc2022Connect',
             on_exit=actions.Shutdown(),
+            parameters=[{'device_file' , '/dev/ttyACM0'}],
             remappings=[
                 ('robo2022util/team/cmd_pwr' , 'robo2022util/b/cmd_pwr'),
             ],
@@ -108,5 +114,29 @@ def generate_launch_description():
             executable='errorChecker',
             on_exit=actions.Shutdown(),
         ),
+        Node(
+            package='safe_extensions',
+            executable='safeLidar',
+            remappings=[
+                ('/scan' , '/safe_extensions/scan'),
+                ('sc_client/error' , 'safe_extensions/error'),
+            ],
+        ),
+        Node(
+            package='urg_node',
+            executable='urg_node_driver',
+            parameters=[{'serial_port' : '/dev/ttyACM1'}],
+            remappings=[
+                ('/scan' , '/safe_extensions/scan'),
+                ('sc_client/error' , 'safe_extensions/error'),
+            ]
+        ),
+        Node(
+            package='rviz2',
+            namespace='',
+            executable='rviz2',
+            name='rviz2',
+            arguments=['-d' , os.path.join(get_package_share_directory('robo_launch'), 'rviz', 'lidarView.rviz')]
+        )
         
     ])

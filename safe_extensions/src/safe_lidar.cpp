@@ -12,12 +12,12 @@
 
 using std::placeholders::_1;
 
-class safetyLidar : public rclcpp::Node{
+class safeLidar : public rclcpp::Node{
     public:
-    safetyLidar(): Node("safetyLidar")
+    safeLidar(): Node("safeLidar")
     {
         laser_sub = this->create_subscription<sensor_msgs::msg::LaserScan>(
-            "/scan" , 10 , std::bind(&safetyLidar::laser_topic_callback , this , _1)
+            "/scan" , 10 , std::bind(&safeLidar::laser_topic_callback , this , _1)
         );
 
         pub_error = this->create_publisher<std_msgs::msg::String>("sc_client/error" , 10);
@@ -46,7 +46,6 @@ class safetyLidar : public rclcpp::Node{
         int safePercent = ((float)counterSafeRange / (float)counterGoodRange) * 100.0;
 
         if(safePercent > 90){
-            //RCLCPP_INFO(this->get_logger() , "OK");
             if(onecePubOK){
                 auto pub_msg = std_msgs::msg::String();
                 pub_error->publish(pub_msg);
@@ -54,14 +53,9 @@ class safetyLidar : public rclcpp::Node{
             }
             onecePubOK2 = true;
         }else{
-            //RCLCPP_ERROR(this->get_logger() , "DetectObject");
-            //if(onecePubOK2){
-                auto pub_msg = std_msgs::msg::String();
-                pub_msg.data = "Stay away from the robot!";
-                pub_error->publish(pub_msg);
-                //onecePubOK2 = false;
-            //}
-            
+            auto pub_msg = std_msgs::msg::String();
+            pub_msg.data = "Stay away from the robot!";
+            pub_error->publish(pub_msg);            
             onecePubOK = true;
         }
     }
@@ -77,7 +71,7 @@ class safetyLidar : public rclcpp::Node{
 int main(int argc , char * argv[])
 {
     rclcpp::init(argc,argv);
-    rclcpp::spin(std::make_shared<safetyLidar>());
+    rclcpp::spin(std::make_shared<safeLidar>());
     rclcpp::shutdown();
     return 0;
 }
