@@ -60,7 +60,7 @@ def generate_launch_description():
             package='robo2022',
             executable='motion_smoother',
             remappings=[
-                ('/cmd_vel/in' ,  '/robo2022/cmd_vel/b/fir'),
+                ('/cmd_vel/in' ,  'safe_extensions/cmd_vel/b/fir'),
                 ('/cmd_vel/out' , '/smoothed_cmd_vel/b/fir')
             ],
             parameters=[{'gain' : 10.0}],
@@ -137,6 +137,14 @@ def generate_launch_description():
             executable='rviz2',
             name='rviz2',
             arguments=['-d' , os.path.join(get_package_share_directory('robo_launch'), 'rviz', 'lidarView.rviz')]
-        )
+        ),
+        Node(
+            package='safe_extensions',
+            executable='safeWall',
+            remappings=[
+                ('/cmd_vel/in' , '/robo2022/cmd_vel/b/fir'),
+                ('/cmd_vel/out' , 'safe_extensions/cmd_vel/b/fir'),
+            ],
+        ),
         
     ])
