@@ -38,7 +38,11 @@ class safe_wall : public rclcpp::Node
     vel_sub_callback(
         geometry_msgs::msg::Twist::SharedPtr msg
     ){
-        if(lockStatus){return;}
+        if(lockStatus){
+            auto pub_msg = geometry_msgs::msg::Twist();
+            pub_vel->publish(pub_msg);
+            return;
+        }
         
         auto pub_msg = geometry_msgs::msg::Twist();
         pub_msg.angular = msg->angular;
