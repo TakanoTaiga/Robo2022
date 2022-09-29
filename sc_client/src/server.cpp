@@ -197,18 +197,12 @@ private:
     smartui_info_callback(
       const std_msgs::msg::String::SharedPtr msg){
         smartui_info_msg = msg;
-        //char buf_smartui_[64];
-        //snprintf(buf_smartui_ , 64 , "SINFO%s" , msg->data.c_str());
-        //sendto(send_socket, buf_smartui_, strlen(buf_smartui_), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
     }
 
     void
     smartui_error_callback(
       const std_msgs::msg::String::SharedPtr msg){
         smartui_error_msg = msg;
-        //char buf_smartui_[64];
-        //snprintf(buf_smartui_ , 64 , "SEMER%s" , msg->data.c_str());
-        //sendto(send_socket, buf_smartui_, strlen(buf_smartui_), 0, (struct sockaddr *)&send_addr, sizeof(send_addr));
     }
 
     void
