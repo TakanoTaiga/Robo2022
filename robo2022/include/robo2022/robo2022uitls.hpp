@@ -12,7 +12,7 @@
 #include "std_msgs/msg/float32_multi_array.hpp"
 
 #define ROBO2022UTILS_L 0.565685
-#define VEL2MOTOR_SCALER 500
+#define VEL2MOTOR_SCALER 900
 
 #define RESET_TWIST geometry_msgs::msg::Twist()
 
@@ -34,6 +34,16 @@ class robo2022utils
         vec[1] *= (float)(VEL2MOTOR_SCALER);
         vec[2] *= (float)(VEL2MOTOR_SCALER);
         vec[3] *= (float)(VEL2MOTOR_SCALER);
+
+        if(vec[0] > 1000){vec[0] = 1000;}
+        if(vec[1] > 1000){vec[1] = 1000;}
+        if(vec[2] > 1000){vec[2] = 1000;}
+        if(vec[3] > 1000){vec[3] = 1000;}
+
+        if(vec[0] < -1000){vec[0] = -1000;}
+        if(vec[1] < -1000){vec[1] = -1000;}
+        if(vec[2] < -1000){vec[2] = -1000;}
+        if(vec[3] < -1000){vec[3] = -1000;}
 
         return vec;
     }
