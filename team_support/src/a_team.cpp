@@ -8,6 +8,8 @@
 #include "geometry_msgs/msg/twist.hpp"
 #include "std_msgs/msg/float32_multi_array.hpp"
 
+#include "team_support/macro.hpp"
+
 // This node is support a team hardware.
 
 using std::placeholders::_1;
@@ -30,29 +32,28 @@ class a_team : public rclcpp::Node
     topic_callback_A_team_support_fir(
         const geometry_msgs::msg::Twist::SharedPtr msg
     ){
-        if(msg->linear.x > 0){
-            auto pub_msg = std_msgs::msg::Float32MultiArray();
-            pub_msg.data.push_back(msg->linear.x * 10);
-            pub_msg.data.push_back(msg->linear.x * 10);
-            pub_power->publish(pub_msg);
-
-            rclcpp::sleep_for(100ms);
-
-            std::fill(pub_msg.data.begin() , pub_msg.data.end() , 0);
-            pub_power->publish(pub_msg);
-        }else{
-            auto pub_msg = std_msgs::msg::Float32MultiArray();
-            pub_msg.data.push_back(msg->linear.x * 10);
-            pub_msg.data.push_back(msg->linear.x * 10);
-            pub_power->publish(pub_msg);
-        }
+        if(msg->linear.x  < 1){return;}
         
+        if(sub_lock == TS_OPEN){
+            sub_lock = TS_LOCK;
+            auto pub_msg = std_msgs::msg::Float32MultiArray();
+            pub_msg.data.push_back(msg->linear.x * 10);
+            pub_power->publish(pub_msg);
 
+            rclcpp::WallRate loop_rate(1000ms);
+            loop_rate.sleep();
+
+            std::fill(pub_msg.data.begin() , pub_msg.data.end() , -200);
+            pub_power->publish(pub_msg);
+            sub_lock = TS_OPEN;
+        }
     }
 
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_cmd_vel_fir;
-
     rclcpp::Publisher<std_msgs::msg::Float32MultiArray>::SharedPtr pub_power;
+
+    bool sub_lock = TS_OPEN;
+
 };
 
 int main(int argc , char * argv[])

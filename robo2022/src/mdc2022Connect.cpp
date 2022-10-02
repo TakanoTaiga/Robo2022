@@ -17,7 +17,7 @@
 #define PI 3.14159265359
 #define MAX_BUF_SIZE 128
 
-#define ASYNC_SYNC SYNC
+#define ASYNC_SYNC ASYNC
 
 using std::placeholders::_1;
 

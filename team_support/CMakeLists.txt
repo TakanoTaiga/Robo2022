@@ -25,6 +25,7 @@ find_package(sensor_msgs REQUIRED)
 
 #for a team
 add_executable(a_team src/a_team.cpp)
+add_executable(joy2vel4a src/joy2vel4a.cpp)
 
 #for b team
 add_executable(b_team src/b_team.cpp)
@@ -32,6 +33,10 @@ add_executable(joy2vel4b src/joy2vel4b.cpp)
 
 #for a team
 target_include_directories(a_team PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+target_include_directories(joy2vel4a PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
@@ -52,6 +57,13 @@ ament_target_dependencies(
   geometry_msgs
 )
 
+ament_target_dependencies(
+  joy2vel4a
+  rclcpp
+  geometry_msgs
+  sensor_msgs
+)
+
 #for b team
 ament_target_dependencies(
   b_team
@@ -69,6 +81,8 @@ ament_target_dependencies(
 
 #for a team
 install(TARGETS a_team
+  DESTINATION lib/${PROJECT_NAME})
+install(TARGETS joy2vel4a
   DESTINATION lib/${PROJECT_NAME})
 
 #for b team
