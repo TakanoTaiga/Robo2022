@@ -62,7 +62,7 @@ def generate_launch_description():
                 ('/cmd_vel/in' ,  '/robo2022/cmd_vel/rover'),
                 ('/cmd_vel/out' , '/smoothed_cmd_vel/main/rover')
             ],
-            parameters=[{'gain' : 0.1}],
+            parameters=[{'gain' : 0.05}],
             name='main'
         ),
 

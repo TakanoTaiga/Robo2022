@@ -37,13 +37,13 @@ class a_team : public rclcpp::Node
         if(sub_lock == TS_OPEN){
             sub_lock = TS_LOCK;
             auto pub_msg = std_msgs::msg::Float32MultiArray();
-            pub_msg.data.push_back(msg->linear.x * 10);
+            pub_msg.data.push_back(msg->linear.x * -10);
             pub_power->publish(pub_msg);
 
             rclcpp::WallRate loop_rate(1000ms);
             loop_rate.sleep();
 
-            std::fill(pub_msg.data.begin() , pub_msg.data.end() , -200);
+            std::fill(pub_msg.data.begin() , pub_msg.data.end() , 100);
             pub_power->publish(pub_msg);
             sub_lock = TS_OPEN;
         }
