@@ -19,7 +19,7 @@ git clone https://github.com/TakanoTaiga/Robo2022.git
 Build the code in the workspace
 ```
 cd ~/robo2022_ws
-colcon build
+colcon build --symlink-install
 ```
 
 ## Launch
