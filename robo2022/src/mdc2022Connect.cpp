@@ -28,9 +28,16 @@ class mdc2022Connect : public rclcpp::Node
     {
         this->declare_parameter<std::string>("device_file" , "/dev/ttyACM0");
         this->declare_parameter<bool>("debug" , false);
+        this->declare_parameter<bool>("async" , SYNC);
+
         this->get_parameter("device_file" , deviceName_str);
         this->get_parameter("debug" , param_debug);
+        this->get_parameter("async" , is_async);
 
+        if(is_async != ASYNC_SYNC){
+            RCLCPP_ERROR(this->get_logger() , "Async/sync mode is not mach.");
+            rclcpp::shutdown();
+        }
 
         char deviceName[64];
         strcpy(deviceName , deviceName_str.c_str());
@@ -42,7 +49,7 @@ class mdc2022Connect : public rclcpp::Node
         }
 
         sub_sp = this->create_subscription<std_msgs::msg::Float32MultiArray>(
-            "robo2022util/cmd_pwr" , 10 , std::bind(&mdc2022Connect::topic_callback_sp, this , _1)
+            "robo2022util/main/cmd_pwr" , 10 , std::bind(&mdc2022Connect::topic_callback_sp, this , _1)
         );
 
         sub_team_support = this->create_subscription<std_msgs::msg::Float32MultiArray>(
@@ -140,7 +147,7 @@ class mdc2022Connect : public rclcpp::Node
     bool is_sp_come = false;
     bool is_ts_come = false;
 
-
+    bool is_async = ASYNC;
 
     std::string deviceName_str;
 

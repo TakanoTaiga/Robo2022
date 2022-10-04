@@ -21,10 +21,10 @@ class a_team : public rclcpp::Node
     a_team(): Node("a_team_support")
     {
         sub_cmd_vel_fir = this->create_subscription<geometry_msgs::msg::Twist>(
-            "robo2022/cmd_vel/a/fir" , 4 , std::bind(&a_team::topic_callback_A_team_support_fir, this ,_1)
+            "robo2022/cmd_vel/a_team/fir" , 4 , std::bind(&a_team::topic_callback_A_team_support_fir, this ,_1)
         );
 
-        pub_power = this->create_publisher<std_msgs::msg::Float32MultiArray>("robo2022util/a/cmd_pwr" , 4);
+        pub_power = this->create_publisher<std_msgs::msg::Float32MultiArray>("robo2022util/a_team/cmd_pwr" , 4);
     }
 
     private:

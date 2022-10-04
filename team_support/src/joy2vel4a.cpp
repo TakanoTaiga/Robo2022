@@ -19,7 +19,7 @@ class joy2vel4a : public rclcpp::Node
       "/SmartUI" , 10 , std::bind(&joy2vel4a::smartui_callback , this , _1)
     );
 
-    pub_cmd_vel_fir = this->create_publisher<geometry_msgs::msg::Twist>("robo2022/cmd_vel/a/fir" , 10);
+    pub_cmd_vel_fir = this->create_publisher<geometry_msgs::msg::Twist>("robo2022/cmd_vel/a_team/fir" , 10);
   }
 
   private:

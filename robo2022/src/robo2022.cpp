@@ -29,7 +29,7 @@ class robo2022 : public rclcpp::Node , public robo2022utils
         );
 
 
-        pub_power = this->create_publisher<std_msgs::msg::Float32MultiArray>("robo2022util/cmd_pwr" , 4);
+        pub_power = this->create_publisher<std_msgs::msg::Float32MultiArray>("robo2022util/main/cmd_pwr" , 4);
     }
 
     private:

@@ -5,25 +5,25 @@ import os.path
 
 
 def generate_launch_description():
+    MACRO_MDC_ASYNC = False
+    MACRO_MDC_SYNC = True
+    
     return LaunchDescription([
         # Physical Controller
         Node(
             package='sc_client',
             executable='server',
-            parameters=[{'nic' : 'enx606d3cd52e75'} , {'c1' : 'Up'} , {'c2' : 'Down'} , {'s1' : 'Fir power'} , {'s2' : 'N/A'} , {'debug' : False}],
+            parameters=[{'nic' : 'eno1'} , 
+                        {'c1' : 'Up'} , 
+                        {'c2' : 'Down'} , 
+                        {'s1' : 'Fir power'} , 
+                        {'s2' : "🦅 Eagle"} , 
+                        {'debug' : False}],
             on_exit=actions.Shutdown(),
             remappings=[
                 ('sc_client/error' , 'safe_extensions/error'),
             ]
         ),
-        Node(
-            package='joy',
-            executable='joy_node',
-            remappings=[
-                ('/joy' , '/sc_client/joy')
-            ],
-        ),
-
         # Joysic to vector
         Node(
             package='robo2022',
@@ -90,9 +90,11 @@ def generate_launch_description():
             package='robo2022',
             executable='mdc2022Connect',
             on_exit=actions.Shutdown(),
-            parameters=[{'device_file' : '/dev/ttyACM0'} , {'debug' : False}],
+            parameters=[{'device_file' : '/dev/ttyACM0'} , 
+                        {'debug' : True} , 
+                        {'async' : MACRO_MDC_ASYNC}],
             remappings=[
-                ('robo2022util/team/cmd_pwr' , 'robo2022util/a/cmd_pwr'),
+                ('robo2022util/team/cmd_pwr' , 'robo2022util/a_team/cmd_pwr'),
             ],
         ),
 

@@ -21,7 +21,6 @@ class joy2vel : public rclcpp::Node
 
     pub_cmd_vel_rover = this->create_publisher<geometry_msgs::msg::Twist>("robo2022/cmd_vel/rover" , 10);
     pub_cmd_vel_updown = this->create_publisher<geometry_msgs::msg::Twist>("robo2022/cmd_vel/updown" , 10);
-    pub_cmd_vel_bomb = this->create_publisher<geometry_msgs::msg::Twist>("robo2022/cmd_vel/bomb" , 10);
 
     shotPwr = geometry_msgs::msg::Twist();
   }
@@ -36,19 +35,6 @@ class joy2vel : public rclcpp::Node
     twist_msg.linear.x = (double)(get_msg->axes[1]);
     twist_msg.angular.y = (double)(get_msg->axes[3]);
     pub_cmd_vel_rover -> publish(twist_msg);
-
-    if(get_msg->axes[2] < 0){
-      pub_cmd_vel_bomb->publish(rtPwr);
-      return;
-    }
-
-    if(get_msg->axes[5] < 0){
-      pub_cmd_vel_bomb->publish(shotPwr);
-    }else{
-      pub_cmd_vel_bomb->publish(
-        geometry_msgs::msg::Twist()
-      );
-    }
   }
 
   void
@@ -78,7 +64,6 @@ class joy2vel : public rclcpp::Node
 
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_cmd_vel_rover;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_cmd_vel_updown;
-  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_cmd_vel_bomb;
 
   geometry_msgs::msg::Twist shotPwr;
   geometry_msgs::msg::Twist rtPwr;
