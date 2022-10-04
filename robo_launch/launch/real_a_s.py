@@ -82,6 +82,7 @@ def generate_launch_description():
             remappings=[
                 ('/joy' , '/sc_client/joy'),
                 ('/SmartUI' , '/sc_client/SmartUI'),
+                ('/robo2022/cmd_vel/a/fir' ,  'safe_extensions/cmd_vel/a/fir'),
             ],
         ),
         
@@ -90,7 +91,7 @@ def generate_launch_description():
             package='robo2022',
             executable='mdc2022Connect',
             on_exit=actions.Shutdown(),
-            parameters=[{'device_file' : '/dev/ttyACM0'} , {'debug' : False}],
+            parameters=[{'device_file' : '/dev/ttyACM0'} , {'debug' : True}],
             remappings=[
                 ('robo2022util/team/cmd_pwr' , 'robo2022util/a/cmd_pwr'),
             ],
@@ -110,4 +111,29 @@ def generate_launch_description():
                 ('sc_client/error' , 'safe_extensions/error'),
             ],
         ),
+        Node(
+            package='urg_node',
+            executable='urg_node_driver',
+            parameters=[{'serial_port' : '/dev/ttyACM1'}],
+            remappings=[
+                ('/scan' , '/safe_extensions/scan'),
+                ('sc_client/error' , 'safe_extensions/error'),
+            ]
+        ),
+        Node(
+            package='rviz2',
+            namespace='',
+            executable='rviz2',
+            name='rviz2',
+            arguments=['-d' , os.path.join(get_package_share_directory('robo_launch'), 'rviz', 'lidarView.rviz')]
+        ),
+        Node(
+            package='safe_extensions',
+            executable='safeWall',
+            remappings=[
+                ('/cmd_vel/in' , '/robo2022/cmd_vel/a/fir'),
+                ('/cmd_vel/out' , 'safe_extensions/cmd_vel/a/fir'),
+            ],
+        ),
+        
     ])
