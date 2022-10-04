@@ -102,12 +102,4 @@ def generate_launch_description():
             executable='errorChecker',
             on_exit=actions.Shutdown(),
         ),
-        Node(
-            package='safe_extensions',
-            executable='safeLidar',
-            remappings=[
-                ('/scan' , '/safe_extensions/scan'),
-                ('sc_client/error' , 'safe_extensions/error'),
-            ],
-        ),
     ])

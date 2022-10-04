@@ -91,7 +91,7 @@ def generate_launch_description():
             package='robo2022',
             executable='mdc2022Connect',
             on_exit=actions.Shutdown(),
-            parameters=[{'device_file' : '/dev/ttyACM0'} , {'debug' : True}],
+            parameters=[{'device_file' : '/dev/ttyACM0'} , {'debug' : False}],
             remappings=[
                 ('robo2022util/team/cmd_pwr' , 'robo2022util/a/cmd_pwr'),
             ],

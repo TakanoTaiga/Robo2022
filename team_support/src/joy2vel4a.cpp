@@ -6,17 +6,17 @@
 
 using std::placeholders::_1;
 
-class joy2vel4b : public rclcpp::Node
+class joy2vel4a : public rclcpp::Node
 {
   public:
-  joy2vel4b() : Node("joy2vel4b")
+  joy2vel4a() : Node("joy2vel4a")
   {
     sub_joy = this->create_subscription<sensor_msgs::msg::Joy>(
-      "/joy" , 10 , std::bind(&joy2vel4b::joy_topic_callback, this , _1)
+      "/joy" , 10 , std::bind(&joy2vel4a::joy_topic_callback, this , _1)
     );
 
     sub_smartui = this->create_subscription<sensor_msgs::msg::Joy>(
-      "/SmartUI" , 10 , std::bind(&joy2vel4b::smartui_callback , this , _1)
+      "/SmartUI" , 10 , std::bind(&joy2vel4a::smartui_callback , this , _1)
     );
 
     pub_cmd_vel_fir = this->create_publisher<geometry_msgs::msg::Twist>("robo2022/cmd_vel/a/fir" , 10);
@@ -54,7 +54,7 @@ class joy2vel4b : public rclcpp::Node
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<joy2vel4b>());
+  rclcpp::spin(std::make_shared<joy2vel4a>());
   rclcpp::shutdown();
   return 0;
 }
