@@ -26,10 +26,10 @@ colcon build --symlink-install
 Real
 ```
 source ~/robo2022_ws/install/setup.sh
-ros2 launch robo_launch real.py
+ros2 launch robo_launch real_a.py
 ```
 Sim
 ```
 source ~/robo2022_ws/install/setup.sh
-ros2 launch robo_launch sim.py
+ros2 launch robo_launch sim_a.py
 ```
