@@ -53,8 +53,14 @@ class robo2022 : public rclcpp::Node , public robo2022utils
 
     void
     pwr_callback_func(){
-        if(vec_target_rover == NULL){return;}
-        if(vec_target_up_down == NULL){return;}
+        if(vec_target_rover == NULL){
+            RCLCPP_ERROR(this->get_logger() , "robo2022.cpp/pwr_callback_func()/vec_target_rover is NULL.");
+            return;
+        }
+        if(vec_target_up_down == NULL){
+            RCLCPP_ERROR(this->get_logger() , "robo2022.cpp/pwr_callback_func()/vec_target_up_down is NULL.");
+            return;
+        }
 
         auto motorPower = vel2motor(vec_target_rover);
         auto pub_msg = std_msgs::msg::Float32MultiArray();

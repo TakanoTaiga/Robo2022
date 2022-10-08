@@ -43,7 +43,7 @@ class a_team : public rclcpp::Node
             rclcpp::WallRate loop_rate(1000ms);
             loop_rate.sleep();
 
-            std::fill(pub_msg.data.begin() , pub_msg.data.end() , 100);
+            std::fill(pub_msg.data.begin() , pub_msg.data.end() , 70);
             pub_power->publish(pub_msg);
             sub_lock = TS_OPEN;
         }

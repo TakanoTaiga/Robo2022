@@ -28,7 +28,7 @@ class joy2vel4a : public rclcpp::Node
   joy_topic_callback(const sensor_msgs::msg::Joy::SharedPtr get_msg)
   {
     auto pub_msg_fir = geometry_msgs::msg::Twist();
-    if(get_msg->buttons[5] > 0){
+    if(get_msg->axes[5] < 0){
       pub_msg_fir.linear.x = fir_power;
     }else{
       pub_msg_fir.linear.x = 0;

@@ -56,7 +56,7 @@ class errorChecker : public rclcpp::Node
 
     void
     sub_callback(std_msgs::msg::String::SharedPtr msg){
-        RCLCPP_INFO(this->get_logger(), "[error Checker ERROR]:%s", msg->data.c_str());
+        RCLCPP_ERROR(this->get_logger(), "%s", msg->data.c_str());
         rclcpp::shutdown();
     }
 
@@ -68,11 +68,9 @@ class errorChecker : public rclcpp::Node
           return;
         }
 
-        RCLCPP_INFO(this->get_logger(), "%s:%s", inet_ntoa(from_addr.sin_addr), buf);
-
         char cmpData[] = "EMERGENCY";
         if(strcmp(buf , cmpData) == 0){
-            RCLCPP_INFO(this->get_logger(), "[error Checker ERROR]:from controller emergency button");
+            RCLCPP_ERROR(this->get_logger(), "push from controller emergency button");
             rclcpp::shutdown();
         }
     }

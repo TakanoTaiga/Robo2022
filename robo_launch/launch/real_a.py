@@ -13,7 +13,7 @@ def generate_launch_description():
         Node(
             package='sc_client',
             executable='server',
-            parameters=[{'nic' : 'eno1'} , 
+            parameters=[{'nic' : 'wlp3s0'} , 
                         {'c1' : 'Up'} , 
                         {'c2' : 'Down'} , 
                         {'s1' : 'Fir power'} , 
@@ -91,7 +91,7 @@ def generate_launch_description():
             executable='mdc2022Connect',
             on_exit=actions.Shutdown(),
             parameters=[{'device_file' : '/dev/ttyACM0'} , 
-                        {'debug' : True} , 
+                        {'debug' : False} , 
                         {'async' : MACRO_MDC_ASYNC}],
             remappings=[
                 ('robo2022util/team/cmd_pwr' , 'robo2022util/a_team/cmd_pwr'),
