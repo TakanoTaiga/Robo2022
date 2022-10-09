@@ -14,7 +14,6 @@
 
 #include "robo2022/macros.hpp"
 
-#define PI 3.14159265359
 #define MAX_BUF_SIZE 128
 
 #define ASYNC_SYNC ASYNC
@@ -35,7 +34,7 @@ class mdc2022Connect : public rclcpp::Node
         this->get_parameter("async" , is_async);
 
         if(is_async != ASYNC_SYNC){
-            RCLCPP_ERROR(this->get_logger() , "Async/sync mode is not mach.");
+            RCLCPP_ERROR(this->get_logger() , "Async/Sync mode is not mach.");
             rclcpp::shutdown();
         }
 

@@ -13,7 +13,7 @@ def generate_launch_description():
         Node(
             package='sc_client',
             executable='server',
-            parameters=[{'nic' : 'eno1'} , 
+            parameters=[{'nic' : 'enxa0cec8d372fa'} , 
                         {'c1' : 'Up'} , 
                         {'c2' : 'Down'} , 
                         {'s1' : 'Fir power'} , 
@@ -91,7 +91,7 @@ def generate_launch_description():
                 ('/cmd_vel/in' ,  '/robo2022/cmd_vel/rover'),
                 ('/cmd_vel/out' , '/smoothed_cmd_vel/main/rover')
             ],
-            parameters=[{'gain' : 0.1}],
+            parameters=[{'gain' : 0.05}],
             name='main'
         ),
 
@@ -122,8 +122,8 @@ def generate_launch_description():
             executable='mdc2022Connect',
             on_exit=actions.Shutdown(),
             parameters=[{'device_file' : '/dev/ttyACM0'} , 
-                        {'debug' : True} , 
-                        {'async' : MACRO_MDC_SYNC}],
+                        {'debug' : False} , 
+                        {'async' : MACRO_MDC_ASYNC}],
             remappings=[
                 ('robo2022util/team/cmd_pwr' , 'robo2022util/b/cmd_pwr'),
             ],

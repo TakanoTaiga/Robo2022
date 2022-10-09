@@ -22,7 +22,6 @@ class joy2vel : public rclcpp::Node
     pub_cmd_vel_rover = this->create_publisher<geometry_msgs::msg::Twist>("robo2022/cmd_vel/rover" , 10);
     pub_cmd_vel_updown = this->create_publisher<geometry_msgs::msg::Twist>("robo2022/cmd_vel/updown" , 10);
 
-    shotPwr = geometry_msgs::msg::Twist();
   }
 
   private:
@@ -41,8 +40,6 @@ class joy2vel : public rclcpp::Node
   smartui_callback(const sensor_msgs::msg::Joy::SharedPtr get_msg)
   {
     auto pub_msg = geometry_msgs::msg::Twist();
-    shotPwr.linear.x = get_msg->axes[1];
-    rtPwr.linear.x = get_msg->axes[0] * -1;
 
     if(get_msg->buttons[0] > get_msg->buttons[1])
     {
@@ -64,10 +61,6 @@ class joy2vel : public rclcpp::Node
 
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_cmd_vel_rover;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_cmd_vel_updown;
-
-  geometry_msgs::msg::Twist shotPwr;
-  geometry_msgs::msg::Twist rtPwr;
-
 };
 
 int main(int argc, char * argv[])

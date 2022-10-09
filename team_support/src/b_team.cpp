@@ -6,7 +6,6 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
-#include "geometry_msgs/msg/vector3.hpp"
 #include "std_msgs/msg/float32_multi_array.hpp"
 
 // This node is support b team hardware.
