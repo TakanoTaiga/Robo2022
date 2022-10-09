@@ -33,32 +33,30 @@ class joy2vel4b : public rclcpp::Node
   joy_topic_callback(const sensor_msgs::msg::Joy::SharedPtr get_msg)
   {
     auto pub_msg_belt = geometry_msgs::msg::Twist();
-    if(get_msg->buttons[2] > get_msg->buttons[1])
+    if(get_msg->axes[5] < 0)
     {
       //Nutoral
       pub_msg_belt.linear.x = param_belt;
     }
-    else if(get_msg->buttons[2] < get_msg->buttons[1])
+    else if(get_msg->buttons[4] > 0)
     {
       //Counter
       pub_msg_belt.linear.x = -1.0 * param_belt;
     }
     pub_cmd_vel_belt->publish(pub_msg_belt);
-
-
-    auto pub_msg_fir = geometry_msgs::msg::Twist();
-    if(get_msg->buttons[5] > 0){
-      pub_msg_fir.linear.x = fir_power;
-    }else{
-      pub_msg_fir.linear.x = 0;
-    }
-    pub_cmd_vel_fir->publish(pub_msg_fir);
   }
 
   void
   smartui_callback(const sensor_msgs::msg::Joy::SharedPtr get_msg)
   {
-    fir_power = get_msg->axes[0];    
+    auto pub_msg_fir = geometry_msgs::msg::Twist();
+
+    if(get_msg->axes[1] > 90.0){
+      pub_msg_fir.linear.x = get_msg->axes[0];
+    }else{
+      pub_msg_fir.linear.x = 0;
+    }
+    pub_cmd_vel_fir->publish(pub_msg_fir);
   }
 
   rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr sub_joy;

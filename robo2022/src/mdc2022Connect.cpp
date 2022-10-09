@@ -16,7 +16,7 @@
 
 #define MAX_BUF_SIZE 128
 
-#define ASYNC_SYNC ASYNC
+#define ASYNC_SYNC SYNC
 
 using std::placeholders::_1;
 
