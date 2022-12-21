@@ -1,5 +1,6 @@
-# 2022Robokon A team
+![main workflow](https://github.com/TakanoTaiga/Robo2022/actions/workflows/main.yml/badge.svg)
 
+# 2022Robokon A team
 document --> [TakanoTaiga/robo2022doc](https://github.com/TakanoTaiga/robo2022doc)
 
 ## Build
